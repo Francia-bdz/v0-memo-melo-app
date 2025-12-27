@@ -28,26 +28,17 @@ export default async function EvaluatePage({ params }: PageProps) {
     notFound()
   }
 
-  const { data: instrument } = await supabase
-    .from("instruments")
-    .select("*")
-    .eq("id", instrumentId)
-    .eq("user_id", user.id)
-    .single()
+  const { data: instrument } = await supabase.from("instruments").select("*").eq("id", instrumentId).single()
 
   if (!instrument) {
     notFound()
   }
 
-  const { data: latestEvaluation } = await supabase
-    .from("evaluations")
+  const { data: instrumentElements } = await supabase
+    .from("instrument_elements")
     .select("*")
-    .eq("song_element_id", elementId)
     .eq("instrument_id", instrumentId)
-    .eq("user_id", user.id)
-    .order("evaluated_at", { ascending: false })
-    .limit(1)
-    .single()
+    .order("order_index", { ascending: true })
 
   const { data: allEvaluations } = await supabase
     .from("evaluations")
@@ -59,12 +50,12 @@ export default async function EvaluatePage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader displayName={profile?.display_name || "Musician"} />
+      <DashboardHeader displayName={profile?.display_name || "Musicien"} />
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <EvaluationForm
           element={element}
           instrument={instrument}
-          latestEvaluation={latestEvaluation}
+          instrumentElements={instrumentElements || []}
           allEvaluations={allEvaluations || []}
         />
       </main>

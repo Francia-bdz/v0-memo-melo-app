@@ -6,7 +6,6 @@ export interface Profile {
 
 export interface Instrument {
   id: string
-  user_id: string
   name: string
   created_at: string
 }
@@ -30,10 +29,21 @@ export interface SongElement {
   created_at: string
 }
 
+export interface InstrumentElement {
+  id: string
+  instrument_id: string
+  name: string
+  description: string
+  is_mandatory: boolean
+  order_index: number
+  created_at: string
+}
+
 export interface Evaluation {
   id: string
   song_element_id: string
   instrument_id: string
+  instrument_element_id: string | null
   user_id: string
   level: number
   notes: string | null

@@ -44,8 +44,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome to Memo-Melo</CardTitle>
-            <CardDescription>Track your music learning progress</CardDescription>
+            <CardTitle className="text-2xl">Bienvenue sur Memo-Melo</CardTitle>
+            <CardDescription>Suivez votre progression d'apprentissage musical</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
@@ -55,14 +55,14 @@ export default function LoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="musician@example.com"
+                    placeholder="musicien@exemple.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Mot de passe</Label>
                   <Input
                     id="password"
                     type="password"
@@ -73,13 +73,13 @@ export default function LoginPage() {
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Logging in..." : "Login"}
+                  {isLoading ? "Connexion..." : "Se connecter"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Don&apos;t have an account?{" "}
+                Pas encore de compte ?{" "}
                 <Link href="/auth/sign-up" className="underline underline-offset-4">
-                  Sign up
+                  S'inscrire
                 </Link>
               </div>
             </form>

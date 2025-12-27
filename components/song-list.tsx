@@ -15,9 +15,9 @@ export function SongList({ songs }: SongListProps) {
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
             <Music2 className="h-10 w-10 text-muted-foreground" />
           </div>
-          <h3 className="mt-6 text-xl font-semibold">No songs yet</h3>
+          <h3 className="mt-6 text-xl font-semibold">Aucun morceau pour le moment</h3>
           <p className="mt-2 text-center text-sm text-muted-foreground max-w-sm">
-            Start your musical journey by adding your first song to track your learning progress
+            Commencez votre voyage musical en ajoutant votre premier morceau pour suivre votre progression
           </p>
         </CardContent>
       </Card>
@@ -33,14 +33,14 @@ export function SongList({ songs }: SongListProps) {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="text-xl leading-tight line-clamp-2">{song.title}</CardTitle>
-                  {song.artist && <CardDescription className="mt-1 line-clamp-1">by {song.artist}</CardDescription>}
+                  {song.artist && <CardDescription className="mt-1 line-clamp-1">par {song.artist}</CardDescription>}
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="h-3 w-3" />
-                <span>Updated {new Date(song.updated_at).toLocaleDateString()}</span>
+                <span>Mis à jour le {new Date(song.updated_at).toLocaleDateString("fr-FR")}</span>
               </div>
               {song.notes && <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{song.notes}</p>}
             </CardContent>

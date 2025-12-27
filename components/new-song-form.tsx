@@ -31,7 +31,7 @@ export function NewSongForm() {
       const {
         data: { user },
       } = await supabase.auth.getUser()
-      if (!user) throw new Error("Not authenticated")
+      if (!user) throw new Error("Non authentifié")
 
       const { data: song, error: insertError } = await supabase
         .from("songs")
@@ -49,7 +49,7 @@ export function NewSongForm() {
       router.push(`/dashboard/songs/${song.id}`)
       router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "An error occurred")
+      setError(error instanceof Error ? error.message : "Une erreur s'est produite")
     } finally {
       setIsLoading(false)
     }
@@ -62,30 +62,30 @@ export function NewSongForm() {
           <Link href="/dashboard">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              Retour
             </Button>
           </Link>
         </div>
-        <CardTitle>Song Details</CardTitle>
-        <CardDescription>Enter information about the song you want to learn</CardDescription>
+        <CardTitle>Détails du morceau</CardTitle>
+        <CardDescription>Entrez les informations sur le morceau que vous souhaitez apprendre</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Song Title *</Label>
+            <Label htmlFor="title">Titre du morceau *</Label>
             <Input
               id="title"
-              placeholder="e.g., Stairway to Heaven"
+              placeholder="ex: Stairway to Heaven"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="artist">Artist</Label>
+            <Label htmlFor="artist">Artiste</Label>
             <Input
               id="artist"
-              placeholder="e.g., Led Zeppelin"
+              placeholder="ex: Led Zeppelin"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
             />
@@ -94,7 +94,7 @@ export function NewSongForm() {
             <Label htmlFor="notes">Notes</Label>
             <Textarea
               id="notes"
-              placeholder="Any additional notes about this song..."
+              placeholder="Notes supplémentaires sur ce morceau..."
               rows={4}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -103,11 +103,11 @@ export function NewSongForm() {
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-3">
             <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Adding song..." : "Add Song"}
+              {isLoading ? "Ajout du morceau..." : "Ajouter le morceau"}
             </Button>
             <Link href="/dashboard" className="flex-1">
               <Button type="button" variant="outline" className="w-full bg-transparent">
-                Cancel
+                Annuler
               </Button>
             </Link>
           </div>

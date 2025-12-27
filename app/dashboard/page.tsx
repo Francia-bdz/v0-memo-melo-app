@@ -27,17 +27,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader displayName={profile?.display_name || "Musician"} />
+      <DashboardHeader displayName={profile?.display_name || "Musicien"} />
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">My Songs</h1>
-            <p className="text-muted-foreground mt-1">Track your learning progress across all your songs</p>
+            <h1 className="text-3xl font-bold tracking-tight">Mes morceaux</h1>
+            <p className="text-muted-foreground mt-1">Suivez votre progression d'apprentissage sur tous vos morceaux</p>
           </div>
           <Link href="/dashboard/songs/new">
             <Button size="lg">
               <Plus className="h-5 w-5 mr-2" />
-              Add Song
+              Ajouter un morceau
             </Button>
           </Link>
         </div>

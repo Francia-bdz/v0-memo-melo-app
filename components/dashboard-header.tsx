@@ -41,7 +41,7 @@ export function DashboardHeader({ displayName }: DashboardHeaderProps) {
 
           <nav className="flex items-center gap-4">
             <Link href="/dashboard">
-              <Button variant="ghost">Songs</Button>
+              <Button variant="ghost">Morceaux</Button>
             </Link>
             <Link href="/dashboard/instruments">
               <Button variant="ghost">
@@ -52,7 +52,7 @@ export function DashboardHeader({ displayName }: DashboardHeaderProps) {
             <Link href="/dashboard/stats">
               <Button variant="ghost">
                 <BarChart3 className="h-4 w-4 mr-2" />
-                Statistics
+                Statistiques
               </Button>
             </Link>
 
@@ -67,7 +67,7 @@ export function DashboardHeader({ displayName }: DashboardHeaderProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

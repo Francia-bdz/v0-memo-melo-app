@@ -57,16 +57,16 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Song</DialogTitle>
-          <DialogDescription>Update the details for this song</DialogDescription>
+          <DialogTitle>Modifier le morceau</DialogTitle>
+          <DialogDescription>Mettre à jour les détails de ce morceau</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-title">Song Title *</Label>
+            <Label htmlFor="edit-title">Titre du morceau *</Label>
             <Input id="edit-title" required value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-artist">Artist</Label>
+            <Label htmlFor="edit-artist">Artiste</Label>
             <Input id="edit-artist" value={artist} onChange={(e) => setArtist(e.target.value)} />
           </div>
           <div className="space-y-2">
@@ -76,7 +76,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-3">
             <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isLoading ? "Enregistrement..." : "Enregistrer les modifications"}
             </Button>
             <Button
               type="button"
@@ -84,7 +84,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
               onClick={() => onOpenChange(false)}
               className="flex-1 bg-transparent"
             >
-              Cancel
+              Annuler
             </Button>
           </div>
         </form>

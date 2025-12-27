@@ -30,11 +30,11 @@ export function ElementCard({ element, instruments, onDelete }: ElementCardProps
         {instruments.length === 0 ? (
           <div className="rounded-lg border border-dashed p-4 text-center">
             <p className="text-sm text-muted-foreground">
-              No instruments added yet.{" "}
+              Aucun instrument disponible.{" "}
               <Link href="/dashboard/instruments" className="underline underline-offset-4">
-                Add instruments
+                Voir les instruments
               </Link>{" "}
-              to start evaluating
+              pour commencer les évaluations
             </p>
           </div>
         ) : (
@@ -43,7 +43,7 @@ export function ElementCard({ element, instruments, onDelete }: ElementCardProps
               <Link key={instrument.id} href={`/dashboard/evaluate/${element.id}/${instrument.id}`}>
                 <Button variant="outline" size="sm">
                   <Target className="h-3 w-3 mr-2" />
-                  Evaluate: {instrument.name}
+                  Évaluer : {instrument.name}
                 </Button>
               </Link>
             ))}

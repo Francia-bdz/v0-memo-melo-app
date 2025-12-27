@@ -47,23 +47,23 @@ export function DeleteSongDialog({ song, open, onOpenChange }: DeleteSongDialogP
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
             <div>
-              <DialogTitle>Delete Song</DialogTitle>
-              <DialogDescription>This action cannot be undone</DialogDescription>
+              <DialogTitle>Supprimer le morceau</DialogTitle>
+              <DialogDescription>Cette action est irréversible</DialogDescription>
             </div>
           </div>
         </DialogHeader>
         <div className="space-y-4">
           <p className="text-sm">
-            Are you sure you want to delete <span className="font-semibold">{song.title}</span>? This will also delete
-            all elements and evaluations associated with this song.
+            Êtes-vous sûr de vouloir supprimer <span className="font-semibold">{song.title}</span> ? Cela supprimera
+            également tous les éléments et évaluations associés à ce morceau.
           </p>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-3">
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting} className="flex-1">
-              {isDeleting ? "Deleting..." : "Delete Song"}
+              {isDeleting ? "Suppression..." : "Supprimer le morceau"}
             </Button>
             <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1 bg-transparent">
-              Cancel
+              Annuler
             </Button>
           </div>
         </div>

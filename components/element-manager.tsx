@@ -88,29 +88,29 @@ export function ElementManager({ songId, elements, instruments, onElementsChange
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Song Elements</CardTitle>
+              <CardTitle>Éléments du morceau</CardTitle>
               <CardDescription>
-                Break down the song into sections like intro, verse, chorus, bridge, solo, etc.
+                Découpez le morceau en sections comme intro, couplet, refrain, pont, solo, etc.
               </CardDescription>
             </div>
             <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Element
+                  Ajouter un élément
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add Song Element</DialogTitle>
-                  <DialogDescription>Add a new section or element to this song</DialogDescription>
+                  <DialogTitle>Ajouter un élément</DialogTitle>
+                  <DialogDescription>Ajoutez une nouvelle section ou élément à ce morceau</DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleAddElement} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="element-name">Element Name *</Label>
+                    <Label htmlFor="element-name">Nom de l'élément *</Label>
                     <Input
                       id="element-name"
-                      placeholder="e.g., Intro, Verse 1, Chorus, Bridge..."
+                      placeholder="ex: Intro, Couplet 1, Refrain, Pont..."
                       required
                       value={newElementName}
                       onChange={(e) => setNewElementName(e.target.value)}
@@ -120,7 +120,7 @@ export function ElementManager({ songId, elements, instruments, onElementsChange
                     <Label htmlFor="element-description">Description</Label>
                     <Textarea
                       id="element-description"
-                      placeholder="Optional notes about this element..."
+                      placeholder="Notes optionnelles sur cet élément..."
                       rows={3}
                       value={newElementDescription}
                       onChange={(e) => setNewElementDescription(e.target.value)}
@@ -129,7 +129,7 @@ export function ElementManager({ songId, elements, instruments, onElementsChange
                   {error && <p className="text-sm text-destructive">{error}</p>}
                   <div className="flex gap-3">
                     <Button type="submit" disabled={isAddingElement} className="flex-1">
-                      {isAddingElement ? "Adding..." : "Add Element"}
+                      {isAddingElement ? "Ajout..." : "Ajouter"}
                     </Button>
                     <Button
                       type="button"
@@ -137,7 +137,7 @@ export function ElementManager({ songId, elements, instruments, onElementsChange
                       onClick={() => setShowAddDialog(false)}
                       className="flex-1 bg-transparent"
                     >
-                      Cancel
+                      Annuler
                     </Button>
                   </div>
                 </form>
@@ -151,9 +151,9 @@ export function ElementManager({ songId, elements, instruments, onElementsChange
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
                 <Music2 className="h-8 w-8 text-muted-foreground" />
               </div>
-              <p className="mt-4 font-medium">No elements yet</p>
+              <p className="mt-4 font-medium">Aucun élément pour le moment</p>
               <p className="mt-1 text-sm text-muted-foreground max-w-sm">
-                Add elements to break down this song into learnable sections
+                Ajoutez des éléments pour découper ce morceau en sections à apprendre
               </p>
             </div>
           ) : (

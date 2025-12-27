@@ -30,18 +30,18 @@ export function SongDetailView({ song, elements: initialElements, instruments }:
           <Link href="/dashboard">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Songs
+              Retour aux morceaux
             </Button>
           </Link>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowEditDialog(true)}>
             <Edit className="h-4 w-4 mr-2" />
-            Edit Song
+            Modifier
           </Button>
           <Button variant="outline" onClick={() => setShowDeleteDialog(true)}>
             <Trash2 className="h-4 w-4 mr-2 text-destructive" />
-            Delete
+            Supprimer
           </Button>
         </div>
       </div>
@@ -49,7 +49,7 @@ export function SongDetailView({ song, elements: initialElements, instruments }:
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl">{song.title}</CardTitle>
-          {song.artist && <CardDescription className="text-base">by {song.artist}</CardDescription>}
+          {song.artist && <CardDescription className="text-base">par {song.artist}</CardDescription>}
         </CardHeader>
         <CardContent>
           {song.notes && (
