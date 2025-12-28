@@ -116,7 +116,6 @@ export function NewSongForm() {
         .map((ev) => ({
           user_id: user.id,
           song_id: song.id,
-          instrument_id: instrumentId,
           instrument_element_id: ev.instrument_element_id,
           level: ev.level,
           notes: ev.notes,
