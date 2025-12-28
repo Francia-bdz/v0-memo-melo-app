@@ -21,15 +21,6 @@ export interface Song {
   updated_at: string
 }
 
-export interface SongElement {
-  id: string
-  song_id: string
-  name: string
-  description: string | null
-  order_index: number
-  created_at: string
-}
-
 export interface InstrumentElement {
   id: string
   instrument_id: string
@@ -42,9 +33,9 @@ export interface InstrumentElement {
 
 export interface Evaluation {
   id: string
-  song_element_id: string
+  song_id: string // Changed from song_element_id to song_id
   instrument_id: string
-  instrument_element_id: string | null
+  instrument_element_id: string
   user_id: string
   level: number
   notes: string | null

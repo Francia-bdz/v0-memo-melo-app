@@ -68,11 +68,10 @@ export function SongDetailView({ song }: SongDetailViewProps) {
         setInstrumentElements(elementsData)
       }
 
-      // Load evaluations
       const { data: evalsData } = await supabase
         .from("evaluations")
         .select("*")
-        .eq("song_element_id", song.id)
+        .eq("song_id", song.id)
         .eq("instrument_id", song.instrument_id)
 
       if (evalsData) {

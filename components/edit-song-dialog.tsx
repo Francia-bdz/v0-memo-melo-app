@@ -51,7 +51,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         const { data: evalsData } = await supabase
           .from("evaluations")
           .select("*")
-          .eq("song_element_id", song.id)
+          .eq("song_id", song.id)
           .eq("instrument_id", song.instrument_id)
 
         if (evalsData) {
@@ -126,7 +126,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         throw new Error("Tous les éléments obligatoires doivent être évalués")
       }
 
-      // Update song with instrument_id
       const { error: updateError } = await supabase
         .from("songs")
         .update({
@@ -140,7 +139,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
       if (updateError) throw updateError
 
-      await supabase.from("evaluations").delete().eq("song_element_id", song.id)
+      await supabase.from("evaluations").delete().eq("song_id", song.id)
 
       const {
         data: { user },
@@ -151,7 +150,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         .filter((ev) => ev.level !== null)
         .map((ev) => ({
           user_id: user.id,
-          song_element_id: song.id,
+          song_id: song.id,
           instrument_id: instrumentId,
           instrument_element_id: ev.instrument_element_id,
           level: ev.level,
