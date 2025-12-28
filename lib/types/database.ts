@@ -16,6 +16,7 @@ export interface Song {
   title: string
   artist: string | null
   notes: string | null
+  instrument_id: string | null // Added instrument_id to track selected instrument per song
   created_at: string
   updated_at: string
 }
@@ -49,4 +50,10 @@ export interface Evaluation {
   notes: string | null
   evaluated_at: string
   created_at: string
+}
+
+export interface ElementEvaluation {
+  instrument_element_id: string
+  level: number | null
+  notes: string | null
 }

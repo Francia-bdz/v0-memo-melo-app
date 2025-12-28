@@ -2,14 +2,19 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import type { Song } from "@/lib/types/database"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ChevronDown, ChevronRight } from "lucide-react"
+import type { Song, Instrument, InstrumentElement, ElementEvaluation } from "@/lib/types/database"
+import { LevelSelector } from "@/components/level-selector"
 
 interface EditSongDialogProps {
   song: Song
@@ -22,9 +27,91 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
   const [title, setTitle] = useState(song.title)
   const [artist, setArtist] = useState(song.artist || "")
   const [notes, setNotes] = useState(song.notes || "")
+  const [instrumentId, setInstrumentId] = useState<string>(song.instrument_id || "")
+  const [instruments, setInstruments] = useState<Instrument[]>([])
+  const [instrumentElements, setInstrumentElements] = useState<InstrumentElement[]>([])
+  const [evaluations, setEvaluations] = useState<Record<string, ElementEvaluation>>({})
+  const [showOptional, setShowOptional] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
+
+  useEffect(() => {
+    if (!open) return
+
+    const loadData = async () => {
+      // Load instruments
+      const { data: instrumentsData } = await supabase.from("instruments").select("*").order("name")
+      if (instrumentsData) {
+        setInstruments(instrumentsData)
+      }
+
+      // Load existing evaluations for this song
+      if (song.instrument_id) {
+        const { data: evalsData } = await supabase
+          .from("evaluations")
+          .select("*")
+          .eq("song_element_id", song.id)
+          .eq("instrument_id", song.instrument_id)
+
+        if (evalsData) {
+          const evalMap: Record<string, ElementEvaluation> = {}
+          evalsData.forEach((ev) => {
+            if (ev.instrument_element_id) {
+              evalMap[ev.instrument_element_id] = {
+                instrument_element_id: ev.instrument_element_id,
+                level: ev.level,
+                notes: ev.notes,
+              }
+            }
+          })
+          setEvaluations(evalMap)
+        }
+      }
+    }
+
+    loadData()
+  }, [open, song, supabase])
+
+  useEffect(() => {
+    const loadElements = async () => {
+      if (!instrumentId) {
+        setInstrumentElements([])
+        return
+      }
+
+      const { data } = await supabase
+        .from("instrument_elements")
+        .select("*")
+        .eq("instrument_id", instrumentId)
+        .order("order_index")
+
+      if (data) {
+        setInstrumentElements(data)
+        // Initialize evaluations for new elements not yet evaluated
+        setEvaluations((prev) => {
+          const updated = { ...prev }
+          data.forEach((elem) => {
+            if (!updated[elem.id]) {
+              updated[elem.id] = {
+                instrument_element_id: elem.id,
+                level: elem.is_mandatory ? 1 : null,
+                notes: null,
+              }
+            }
+          })
+          return updated
+        })
+      }
+    }
+
+    if (open) {
+      loadElements()
+    }
+  }, [instrumentId, open, supabase])
+
+  const mandatoryElements = instrumentElements.filter((e) => e.is_mandatory)
+  const optionalElements = instrumentElements.filter((e) => !e.is_mandatory)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,17 +119,50 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
     setError(null)
 
     try {
+      const missingMandatory = mandatoryElements.filter(
+        (elem) => !evaluations[elem.id] || evaluations[elem.id].level === null,
+      )
+      if (missingMandatory.length > 0) {
+        throw new Error("Tous les éléments obligatoires doivent être évalués")
+      }
+
+      // Update song with instrument_id
       const { error: updateError } = await supabase
         .from("songs")
         .update({
           title,
           artist: artist || null,
           notes: notes || null,
+          instrument_id: instrumentId || null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", song.id)
 
       if (updateError) throw updateError
+
+      await supabase.from("evaluations").delete().eq("song_element_id", song.id)
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) throw new Error("Non authentifié")
+
+      const evaluationsToInsert = Object.values(evaluations)
+        .filter((ev) => ev.level !== null)
+        .map((ev) => ({
+          user_id: user.id,
+          song_element_id: song.id,
+          instrument_id: instrumentId,
+          instrument_element_id: ev.instrument_element_id,
+          level: ev.level,
+          notes: ev.notes,
+          evaluated_at: new Date().toISOString(),
+        }))
+
+      if (evaluationsToInsert.length > 0) {
+        const { error: evalError } = await supabase.from("evaluations").insert(evaluationsToInsert)
+        if (evalError) throw evalError
+      }
 
       onSuccess()
       onOpenChange(false)
@@ -55,12 +175,12 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Modifier le morceau</DialogTitle>
           <DialogDescription>Mettre à jour les détails de ce morceau</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="edit-title">Titre du morceau *</Label>
             <Input id="edit-title" required value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -73,9 +193,101 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
             <Label htmlFor="edit-notes">Notes</Label>
             <Textarea id="edit-notes" rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} />
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-instrument">Instrument *</Label>
+            <Select value={instrumentId} onValueChange={setInstrumentId} required disabled={instruments.length === 1}>
+              <SelectTrigger id="edit-instrument">
+                <SelectValue placeholder="Sélectionnez un instrument" />
+              </SelectTrigger>
+              <SelectContent>
+                {instruments.map((instrument) => (
+                  <SelectItem key={instrument.id} value={instrument.id}>
+                    {instrument.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {instrumentId && instrumentElements.length > 0 && (
+            <div className="space-y-4 border-t pt-4">
+              <div>
+                <h3 className="text-base font-semibold mb-1">Éléments d'apprentissage</h3>
+                <p className="text-sm text-muted-foreground">Mettez à jour votre niveau pour chaque élément</p>
+              </div>
+
+              {mandatoryElements.length > 0 && (
+                <div className="space-y-4">
+                  <h4 className="text-sm font-medium text-muted-foreground">Éléments obligatoires</h4>
+                  {mandatoryElements.map((element) => (
+                    <Card key={element.id}>
+                      <CardHeader>
+                        <CardTitle className="text-sm">
+                          {element.name}
+                          <span className="ml-2 text-xs font-normal text-destructive">*</span>
+                        </CardTitle>
+                        {element.description && (
+                          <CardDescription className="text-xs">{element.description}</CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent>
+                        <LevelSelector
+                          value={evaluations[element.id]?.level || null}
+                          onChange={(level) =>
+                            setEvaluations((prev) => ({
+                              ...prev,
+                              [element.id]: { ...prev[element.id], level },
+                            }))
+                          }
+                          allowEmpty={false}
+                        />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              {optionalElements.length > 0 && (
+                <Collapsible open={showOptional} onOpenChange={setShowOptional}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between bg-transparent" type="button">
+                      <span className="text-sm font-medium">Éléments optionnels ({optionalElements.length})</span>
+                      {showOptional ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-4 mt-4">
+                    {optionalElements.map((element) => (
+                      <Card key={element.id}>
+                        <CardHeader>
+                          <CardTitle className="text-sm">{element.name}</CardTitle>
+                          {element.description && (
+                            <CardDescription className="text-xs">{element.description}</CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent>
+                          <LevelSelector
+                            value={evaluations[element.id]?.level || null}
+                            onChange={(level) =>
+                              setEvaluations((prev) => ({
+                                ...prev,
+                                [element.id]: { ...prev[element.id], level },
+                              }))
+                            }
+                            allowEmpty={true}
+                          />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
+            </div>
+          )}
+
           {error && <p className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-3">
-            <Button type="submit" disabled={isLoading} className="flex-1">
+            <Button type="submit" disabled={isLoading || !instrumentId} className="flex-1">
               {isLoading ? "Enregistrement..." : "Enregistrer les modifications"}
             </Button>
             <Button
