@@ -111,11 +111,24 @@ export function NewSongForm() {
 
       if (insertError) throw insertError
 
+      const { data: songElement, error: elementError } = await supabase
+        .from("song_elements")
+        .insert({
+          song_id: song.id,
+          name: "Morceau complet",
+          description: "Évaluation globale du morceau",
+          order_index: 0,
+        })
+        .select()
+        .single()
+
+      if (elementError) throw elementError
+
       const evaluationsToInsert = Object.values(evaluations)
-        .filter((ev) => ev.level !== null) // Only save evaluated elements
+        .filter((ev) => ev.level !== null)
         .map((ev) => ({
           user_id: user.id,
-          song_element_id: song.id, // Using song.id as placeholder - will need proper element structure
+          song_element_id: songElement.id,
           instrument_id: instrumentId,
           instrument_element_id: ev.instrument_element_id,
           level: ev.level,
