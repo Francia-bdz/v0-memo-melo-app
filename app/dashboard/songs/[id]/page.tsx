@@ -28,23 +28,11 @@ export default async function SongDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  const { data: elements } = await supabase
-    .from("song_elements")
-    .select("*")
-    .eq("song_id", id)
-    .order("order_index", { ascending: true })
-
-  const { data: instruments } = await supabase
-    .from("instruments")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: true })
-
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader displayName={profile?.display_name || "Musician"} />
       <main className="container mx-auto px-4 py-8 max-w-6xl">
-        <SongDetailView song={song} elements={elements || []} instruments={instruments || []} />
+      <SongDetailView song={song} />
       </main>
     </div>
   )
