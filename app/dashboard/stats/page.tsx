@@ -16,24 +16,23 @@ export default async function StatsPage() {
 
   const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).single()
 
-  // Get all songs with their elements and latest evaluations
-  const { data: songs } = await supabase.from("songs").select("*, song_elements(*)").eq("user_id", user.id)
+  const { data: songs } = await supabase.from("songs").select("*, instruments(*)").eq("user_id", user.id)
 
-  const { data: instruments } = await supabase.from("instruments").select("*").eq("user_id", user.id)
+  const { data: instruments } = await supabase.from("instruments").select("*")
 
   const { data: allEvaluations } = await supabase
     .from("evaluations")
-    .select("*, song_elements(*, songs(*)), instruments(*)")
+    .select("*, songs(*), instrument_elements(*)")
     .eq("user_id", user.id)
     .order("evaluated_at", { ascending: false })
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader displayName={profile?.display_name || "Musician"} />
+      <DashboardHeader displayName={profile?.display_name || "Musicien"} />
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Learning Statistics</h1>
-          <p className="text-muted-foreground mt-1">Track your progress across all songs and instruments</p>
+          <h1 className="text-3xl font-bold tracking-tight">Statistiques d'apprentissage</h1>
+          <p className="text-muted-foreground mt-1">Suivez vos progrès sur tous les morceaux et instruments</p>
         </div>
         <StatsOverview songs={songs || []} instruments={instruments || []} evaluations={allEvaluations || []} />
       </main>
