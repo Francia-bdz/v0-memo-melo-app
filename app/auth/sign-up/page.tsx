@@ -64,18 +64,18 @@ export default function SignUpPage() {
       <div className="w-full max-w-sm">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Join Memo-Melo</CardTitle>
-            <CardDescription>Start tracking your musical journey</CardDescription>
+            <CardTitle className="text-2xl">Rejoindre Memo-Melo</CardTitle>
+            <CardDescription>Commencez à suivre votre parcours musical</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp}>
               <div className="flex flex-col gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="displayName">Display Name</Label>
+                  <Label htmlFor="displayName">Nom</Label>
                   <Input
                     id="displayName"
                     type="text"
-                    placeholder="Your name"
+                    placeholder="Votre nom"
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
@@ -93,7 +93,7 @@ export default function SignUpPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">Mot de passe</Label>
                   <Input
                     id="password"
                     type="password"
@@ -103,7 +103,7 @@ export default function SignUpPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="repeat-password">Repeat Password</Label>
+                  <Label htmlFor="repeat-password">Répéter le mot de passe</Label>
                   <Input
                     id="repeat-password"
                     type="password"
@@ -114,13 +114,13 @@ export default function SignUpPage() {
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Creating account..." : "Sign up"}
+                  {isLoading ? "Création du compte..." : "S'inscrire"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
+                Vous avez déjà un compte?{" "}
                 <Link href="/auth/login" className="underline underline-offset-4">
-                  Login
+                  Se connecter
                 </Link>
               </div>
             </form>
