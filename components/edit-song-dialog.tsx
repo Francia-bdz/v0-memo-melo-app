@@ -174,12 +174,12 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Modifier le morceau</DialogTitle>
-          <DialogDescription>Mettre à jour les détails de ce morceau</DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Modifier le morceau</DialogTitle>
+          <DialogDescription className="text-sm">Mettre à jour les détails de ce morceau</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
             <Label htmlFor="edit-title">Titre du morceau *</Label>
             <Input id="edit-title" required value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -285,15 +285,15 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
           )}
 
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <div className="flex gap-3">
-            <Button type="submit" disabled={isLoading || !instrumentId} className="flex-1">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button type="submit" disabled={isLoading || !instrumentId} className="flex-1 w-full">
               {isLoading ? "Enregistrement..." : "Enregistrer les modifications"}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1 bg-transparent"
+              className="flex-1 w-full bg-transparent"
             >
               Annuler
             </Button>

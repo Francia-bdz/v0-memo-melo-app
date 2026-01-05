@@ -68,10 +68,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
         setInstrumentElements(elementsData)
       }
 
-      const { data: evalsData } = await supabase
-        .from("evaluations")
-        .select("*")
-        .eq("song_id", song.id)
+      const { data: evalsData } = await supabase.from("evaluations").select("*").eq("song_id", song.id)
 
       if (evalsData) {
         const evalMap: Record<string, Evaluation> = {}
@@ -92,34 +89,37 @@ export function SongDetailView({ song }: SongDetailViewProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/dashboard">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour aux morceaux
+              <span className="hidden sm:inline">Retour aux morceaux</span>
+              <span className="sm:hidden">Retour</span>
             </Button>
           </Link>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowEditDialog(true)}>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" onClick={() => setShowEditDialog(true)} className="flex-1 sm:flex-none">
             <Edit className="h-4 w-4 mr-2" />
-            Modifier
+            <span className="hidden sm:inline">Modifier</span>
+            <span className="sm:hidden">Éditer</span>
           </Button>
-          <Button variant="outline" onClick={() => setShowDeleteDialog(true)}>
+          <Button variant="outline" onClick={() => setShowDeleteDialog(true)} className="flex-1 sm:flex-none">
             <Trash2 className="h-4 w-4 mr-2 text-destructive" />
-            Supprimer
+            <span className="hidden sm:inline">Supprimer</span>
+            <span className="sm:hidden">Suppr.</span>
           </Button>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl">{song.title}</CardTitle>
-          {song.artist && <CardDescription className="text-base">par {song.artist}</CardDescription>}
+          <CardTitle className="text-2xl sm:text-3xl">{song.title}</CardTitle>
+          {song.artist && <CardDescription className="text-sm sm:text-base">par {song.artist}</CardDescription>}
           {instrument && (
             <div className="pt-2">
-              <Badge variant="secondary" className="text-sm">
+              <Badge variant="secondary" className="text-xs sm:text-sm">
                 {instrument.name}
               </Badge>
             </div>
@@ -127,8 +127,8 @@ export function SongDetailView({ song }: SongDetailViewProps) {
         </CardHeader>
         <CardContent>
           {song.notes && (
-            <div className="rounded-lg bg-muted p-4">
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>
+            <div className="rounded-lg bg-muted p-3 sm:p-4">
+              <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>
             </div>
           )}
         </CardContent>
@@ -137,8 +137,8 @@ export function SongDetailView({ song }: SongDetailViewProps) {
       {instrument && instrumentElements.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Éléments d'apprentissage</CardTitle>
-            <CardDescription>Votre progression pour chaque élément</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Éléments d'apprentissage</CardTitle>
+            <CardDescription className="text-sm">Votre progression pour chaque élément</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Mandatory elements */}
@@ -151,14 +151,19 @@ export function SongDetailView({ song }: SongDetailViewProps) {
                     const levelInfo = getLevelInfo(evaluation?.level || null)
 
                     return (
-                      <div key={element.id} className="flex items-center justify-between p-3 rounded-lg border bg-card">
+                      <div
+                        key={element.id}
+                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg border bg-card"
+                      >
                         <div className="flex-1">
-                          <div className="font-medium">{element.name}</div>
+                          <div className="font-medium text-sm sm:text-base">{element.name}</div>
                           {element.description && (
-                            <div className="text-sm text-muted-foreground">{element.description}</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground">{element.description}</div>
                           )}
                         </div>
-                        <Badge className={cn("ml-4", levelInfo.color)}>{levelInfo.label}</Badge>
+                        <Badge className={cn("ml-0 sm:ml-4 self-start sm:self-center", levelInfo.color)}>
+                          {levelInfo.label}
+                        </Badge>
                       </div>
                     )
                   })}

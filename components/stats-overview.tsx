@@ -76,25 +76,25 @@ export function StatsOverview({ songs, instruments, evaluations }: StatsOverview
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Morceaux</CardTitle>
-            <Music2 className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Morceaux</CardTitle>
+            <Music2 className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalSongs}</div>
+            <div className="text-xl sm:text-2xl font-bold">{totalSongs}</div>
             <p className="text-xs text-muted-foreground mt-1">{totalEvaluations} évaluations</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Instruments</CardTitle>
-            <Wrench className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-xs sm:text-sm font-medium">Instruments</CardTitle>
+            <Wrench className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalInstruments}</div>
+            <div className="text-xl sm:text-2xl font-bold">{totalInstruments}</div>
             <p className="text-xs text-muted-foreground mt-1">
               {totalInstruments === 0 ? "Aucun instrument" : "Suivi des progrès"}
             </p>
@@ -102,23 +102,23 @@ export function StatsOverview({ songs, instruments, evaluations }: StatsOverview
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Évaluations</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-xs sm:text-sm font-medium">Évaluations</CardTitle>
+            <Target className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalEvaluations}</div>
+            <div className="text-xl sm:text-2xl font-bold">{totalEvaluations}</div>
             <p className="text-xs text-muted-foreground mt-1">{latestEvaluations.length} combinaisons uniques</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Niveau Moyen</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="text-xs sm:text-sm font-medium">Niveau Moyen</CardTitle>
+            <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{averageLevel.toFixed(1)}</div>
+            <div className="text-xl sm:text-2xl font-bold">{averageLevel.toFixed(1)}</div>
             <p className="text-xs text-muted-foreground mt-1">{masteryPercentage.toFixed(0)}% maîtrisé</p>
           </CardContent>
         </Card>
