@@ -124,45 +124,6 @@ export function StatsOverview({ songs, instruments, evaluations }: StatsOverview
         </Card>
       </div>
 
-      {/* Level Distribution */}
-      {latestEvaluations.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Distribution de la maîtrise</CardTitle>
-            <CardDescription>Répartition actuelle des niveaux pour tous les éléments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[5, 4, 3, 2, 1].map((level) => {
-                const count = levelCounts[level]
-                const percentage = (count / latestEvaluations.length) * 100
-                return (
-                  <div key={level} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={cn(
-                            "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold",
-                            levelColors[level],
-                          )}
-                        >
-                          {level}
-                        </div>
-                        <span className="font-medium">{levelLabels[level]}</span>
-                      </div>
-                      <span className="text-muted-foreground">
-                        {count} ({percentage.toFixed(0)}%)
-                      </span>
-                    </div>
-                    <Progress value={percentage} className="h-2" />
-                  </div>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Songs Progress */}
       {songStats.length > 0 && (
         <Card>
@@ -205,6 +166,46 @@ export function StatsOverview({ songs, instruments, evaluations }: StatsOverview
                   ))}
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+
+      {/* Level Distribution */}
+      {latestEvaluations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Distribution de la maîtrise</CardTitle>
+            <CardDescription>Répartition actuelle des niveaux pour tous les éléments</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[5, 4, 3, 2, 1].map((level) => {
+                const count = levelCounts[level]
+                const percentage = (count / latestEvaluations.length) * 100
+                return (
+                  <div key={level} className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={cn(
+                            "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold",
+                            levelColors[level],
+                          )}
+                        >
+                          {level}
+                        </div>
+                        <span className="font-medium">{levelLabels[level]}</span>
+                      </div>
+                      <span className="text-muted-foreground">
+                        {count} ({percentage.toFixed(0)}%)
+                      </span>
+                    </div>
+                    <Progress value={percentage} className="h-2" />
+                  </div>
+                )
+              })}
+            </div>
           </CardContent>
         </Card>
       )}

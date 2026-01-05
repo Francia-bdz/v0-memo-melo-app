@@ -9,11 +9,16 @@ interface LevelSelectorProps {
 }
 
 const levels = [
-  { value: 1, label: "À peine", description: "Tout juste commencé", color: "bg-red-500" },
-  { value: 2, label: "Pas mal", description: "Peut jouer lentement avec des erreurs", color: "bg-orange-500" },
-  { value: 3, label: "Familière", description: "Peut jouer à vitesse modérée", color: "bg-yellow-500" },
-  { value: 4, label: "Débutant", description: "Peut jouer bien avec peu d'erreurs", color: "bg-lime-500" },
-  { value: 5, label: "Maîtrisée", description: "Peut jouer parfaitement à pleine vitesse", color: "bg-green-500" },
+{ value: 1, label: "Découverte", description: "L’élément est identifié mais pas encore assimilé", color: "bg-red-500" },
+
+{ value: 2, label: "En cours", description: "Compréhension partielle, réalisation instable ou incomplète", color: "bg-orange-500" },
+
+{ value: 3, label: "Acquis de base", description: "Réalisable dans de bonnes conditions, mais manque encore de régularité", color: "bg-yellow-500" },
+
+{ value: 4, label: "Solide", description: "Réalisé correctement et de manière fiable dans la majorité des situations", color: "bg-lime-500" },
+
+{ value: 5, label: "Maîtrisé", description: "Intégré, fluide et mobilisable sans effort conscient", color: "bg-green-500" },
+
 ]
 
 export function LevelSelector({ value, onChange, allowEmpty = false }: LevelSelectorProps) {
