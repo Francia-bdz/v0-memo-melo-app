@@ -11,15 +11,15 @@ export default function CheckEmailPage() {
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
               <Mail className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle className="text-2xl">Check your email</CardTitle>
-            <CardDescription>We&apos;ve sent you a confirmation link to verify your account</CardDescription>
+            <CardTitle className="text-2xl">Vérifiez votre e-mail </CardTitle>
+            <CardDescription>Nous vous avons envoyé un lien de confirmation pour vérifier votre compte</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <p className="text-sm text-muted-foreground mb-4">
-              Click the link in the email to complete your registration and start using Memo-Melo.
+              Cliquez sur le lien dans l'e-mail pour terminer votre inscription et commencer à utiliser Memo-Melo.
             </p>
             <Link href="/auth/login" className="text-sm underline underline-offset-4">
-              Back to login
+              Retour à la connexion
             </Link>
           </CardContent>
         </Card>
