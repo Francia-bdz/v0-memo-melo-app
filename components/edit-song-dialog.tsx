@@ -48,11 +48,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
       // Load existing evaluations for this song
       if (song.instrument_id) {
-        const { data: evalsData } = await supabase
-          .from("evaluations")
-          .select("*")
-          .eq("song_id", song.id)
-          .eq("instrument_id", song.instrument_id)
+        const { data: evalsData } = await supabase.from("evaluations").select("*").eq("song_id", song.id)
 
         if (evalsData) {
           const evalMap: Record<string, ElementEvaluation> = {}
@@ -151,7 +147,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         .map((ev) => ({
           user_id: user.id,
           song_id: song.id,
-          instrument_id: instrumentId,
           instrument_element_id: ev.instrument_element_id,
           level: ev.level,
           notes: ev.notes,
