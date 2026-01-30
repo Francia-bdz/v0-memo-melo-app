@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-import { Rokkitt, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
+import { Rokkitt, Caprasimo, Geist as V0_Font_Geist, Geist_Mono as V0_Font_Geist_Mono, Source_Serif_4 as V0_Font_Source_Serif_4 } from 'next/font/google'
 
 // Initialize fonts
 const _geist = V0_Font_Geist({ subsets: ['latin'], weight: ["100","200","300","400","500","600","700","800","900"] })
@@ -15,6 +15,12 @@ const rokkitt = Rokkitt({
   subsets: ['latin'], 
   weight: ["100","200","300","400","500","600","700","800","900"],
   variable: '--font-rokkitt'
+})
+
+const caprasimo = Caprasimo({ 
+  subsets: ['latin'], 
+  weight: ["400"],
+  variable: '--font-caprasimo'
 })
 
 export const metadata: Metadata = {
@@ -47,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${rokkitt.variable} font-sans antialiased`}>
+      <body className={`${rokkitt.variable} ${caprasimo.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

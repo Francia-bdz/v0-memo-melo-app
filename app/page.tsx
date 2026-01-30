@@ -12,7 +12,7 @@ export default function HomePage() {
           {/* Left content */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
             {/* Title */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-foreground tracking-tight leading-none font-sans">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-caprasimo  text-foreground tracking-tight leading-none ">
               MEMO-MELO
             </h1>
             
@@ -44,7 +44,7 @@ export default function HomePage() {
           {/* Right content - Mascot */}
           <div className="flex-shrink-0 w-48 sm:w-64 md:w-80 lg:w-96">
             <Image
-              src="/mascot.jpg"
+              src="/memo-logo.svg"
               alt="Memo-Melo mascotte - notes de musique souriantes"
               width={400}
               height={400}
