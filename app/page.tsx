@@ -17,13 +17,12 @@ export default function HomePage() {
             </h1>
             
             {/* Tagline */}
-            <p className="mt-4 sm:mt-6 text-xl sm:text-2xl md:text-3xl font-bold text-foreground font-sans">
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground font-sans">
               Gardez le rythme de votre progression
             </p>
             
             {/* Buttons */}
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
-              {/* Primary button - S'INSCRIRE */}
               <Button asChild size="lg" className="font-extrabold uppercase tracking-wide px-6 sm:px-8 py-3 sm:py-4 h-auto">
                 <Link href="/auth/sign-up">
                   <span>{"S'INSCRIRE"}</span>
@@ -31,7 +30,6 @@ export default function HomePage() {
                 </Link>
               </Button>
               
-              {/* Secondary button - SE CONNECTER */}
               <Button asChild variant="outline" size="lg" className="font-extrabold uppercase tracking-wide px-6 sm:px-8 py-3 sm:py-4 h-auto border-2">
                 <Link href="/auth/login">
                   <span>SE CONNECTER</span>
