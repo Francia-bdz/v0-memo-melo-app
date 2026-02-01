@@ -4,12 +4,13 @@ import type React from "react"
 
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Image from "next/image"
+import { Plus } from "lucide-react"
 
 export default function SignUpPage() {
   const [displayName, setDisplayName] = useState("")
@@ -27,13 +28,13 @@ export default function SignUpPage() {
     setError(null)
 
     if (password !== repeatPassword) {
-      setError("Passwords do not match")
+      setError("Les mots de passe ne correspondent pas")
       setIsLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+      setError("Le mot de passe doit contenir au moins 6 caractères")
       setIsLoading(false)
       return
     }
@@ -60,72 +61,104 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-6">
-      <div className="w-full max-w-sm">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Rejoindre Memo-Melo</CardTitle>
-            <CardDescription>Commencez à suivre votre parcours musical</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSignUp}>
-              <div className="flex flex-col gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="displayName">Nom</Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    placeholder="Votre nom"
-                    required
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="musician@example.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="repeat-password">Répéter le mot de passe</Label>
-                  <Input
-                    id="repeat-password"
-                    type="password"
-                    required
-                    value={repeatPassword}
-                    onChange={(e) => setRepeatPassword(e.target.value)}
-                  />
-                </div>
-                {error && <p className="text-sm text-destructive">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Création du compte..." : "S'inscrire"}
-                </Button>
+    <div className="flex min-h-screen w-full items-center justify-center bg-[var(--vert-600)] p-4">
+      <div className="w-full max-w-4xl bg-[var(--beige-100)] border-4 border-[var(--vert-600)] p-8 md:p-12 lg:p-16">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
+          {/* Form Section */}
+          <div className="w-full md:w-1/2">
+            <h1 className="font-caprasimo text-3xl md:text-4xl text-foreground uppercase tracking-wide mb-8">
+              S'inscrire
+            </h1>
+            
+            <form onSubmit={handleSignUp} className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="displayName" className="text-sm font-bold uppercase tracking-wider text-foreground">
+                  Nom
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  required
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  className="h-12 border-2 border-foreground bg-white rounded-none focus-visible:ring-0 focus-visible:border-foreground"
+                />
               </div>
-              <div className="mt-4 text-center text-sm">
-                Vous avez déjà un compte?{" "}
-                <Link href="/auth/login" className="underline underline-offset-4">
-                  Se connecter
-                </Link>
+              
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email" className="text-sm font-bold uppercase tracking-wider text-foreground">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-12 border-2 border-foreground bg-white rounded-none focus-visible:ring-0 focus-visible:border-foreground"
+                />
               </div>
+              
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password" className="text-sm font-bold uppercase tracking-wider text-foreground">
+                  Mot de passe
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-12 border-2 border-foreground bg-white rounded-none focus-visible:ring-0 focus-visible:border-foreground"
+                />
+              </div>
+              
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="repeat-password" className="text-sm font-bold uppercase tracking-wider text-foreground">
+                  Répéter le mot de passe
+                </Label>
+                <Input
+                  id="repeat-password"
+                  type="password"
+                  required
+                  value={repeatPassword}
+                  onChange={(e) => setRepeatPassword(e.target.value)}
+                  className="h-12 border-2 border-foreground bg-white rounded-none focus-visible:ring-0 focus-visible:border-foreground"
+                />
+              </div>
+              
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              
+              <Button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-fit h-12 px-6 bg-transparent text-foreground border-2 border-foreground rounded-none hover:bg-foreground hover:text-[var(--beige-100)] font-bold uppercase tracking-wider flex items-center gap-2"
+              >
+                {isLoading ? "Création..." : "Valider"}
+                <Plus className="size-4" />
+              </Button>
             </form>
-          </CardContent>
-        </Card>
+            
+            <p className="mt-6 text-sm text-foreground">
+              Vous avez déjà un compte ?{" "}
+              <Link href="/auth/login" className="underline underline-offset-4 hover:text-primary">
+                Se connecter
+              </Link>
+            </p>
+          </div>
+          
+          {/* Mascot Section */}
+          <div className="w-full md:w-1/2 flex items-center justify-center">
+            <Image
+              src="/mascot-character.jpg"
+              alt="Memo-Melo mascot"
+              width={300}
+              height={350}
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
       </div>
     </div>
   )
