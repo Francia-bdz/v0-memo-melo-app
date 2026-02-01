@@ -18,19 +18,19 @@ export default function HomePage() {
             
             {/* Tagline */}
             <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground font-sans">
-              Gardez le rythme de votre progression
+              Garde le rythme de votre progression
             </p>
             
             {/* Buttons */}
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Button asChild size="lg" className="font-extrabold uppercase tracking-wide px-6 sm:px-8 py-3 sm:py-4 h-auto">
+              <Button asChild size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto">
                 <Link href="/auth/sign-up">
                   <span>{"S'INSCRIRE"}</span>
                   <Plus className="h-5 w-5" strokeWidth={3} />
                 </Link>
               </Button>
               
-              <Button asChild variant="outline" size="lg" className="font-extrabold uppercase tracking-wide px-6 sm:px-8 py-3 sm:py-4 h-auto border-2">
+              <Button asChild variant="outline" size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto border-2">
                 <Link href="/auth/login">
                   <span>SE CONNECTER</span>
                   <Plus className="h-5 w-5" strokeWidth={3} />
