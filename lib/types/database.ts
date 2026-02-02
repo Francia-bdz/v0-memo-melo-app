@@ -16,7 +16,9 @@ export interface Song {
   title: string
   artist: string | null
   notes: string | null
-  instrument_id: string | null // Added instrument_id to track selected instrument per song
+  partition_url: string | null
+  music_url: string | null
+  instrument_id: string | null
   created_at: string
   updated_at: string
 }

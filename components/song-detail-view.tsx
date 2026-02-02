@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ArrowLeft, Edit, Trash2, ChevronDown, ChevronRight } from "lucide-react"
+import { ArrowLeft, Edit, Trash2, ChevronDown, ChevronRight, FileMusic, Music } from "lucide-react"
 import Link from "next/link"
 import type { Song, Instrument, InstrumentElement, Evaluation } from "@/lib/types/database"
 import { DeleteSongDialog } from "@/components/delete-song-dialog"
@@ -125,7 +125,33 @@ export function SongDetailView({ song }: SongDetailViewProps) {
             </div>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Links */}
+          <div className="flex flex-wrap gap-3">
+            {song.partition_url && (
+              <a
+                href={song.partition_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
+              >
+                <FileMusic className="h-4 w-4" />
+                Voir la partition
+              </a>
+            )}
+            {song.music_url && (
+              <a
+                href={song.music_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
+              >
+                <Music className="h-4 w-4" />
+                Écouter la musique
+              </a>
+            )}
+          </div>
+          
           {song.notes && (
             <div className="rounded-lg bg-muted p-3 sm:p-4">
               <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>

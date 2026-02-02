@@ -6,26 +6,23 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, ChevronDown, ChevronRight } from "lucide-react"
-import Link from "next/link"
+import { Plus, ChevronDown } from "lucide-react"
 import type { Instrument, InstrumentElement, ElementEvaluation } from "@/lib/types/database"
-import { LevelSelector } from "@/components/level-selector"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { MusicNoteRating } from "@/components/music-note-rating"
 
 export function NewSongForm() {
   const [title, setTitle] = useState("")
   const [artist, setArtist] = useState("")
+  const [partitionUrl, setPartitionUrl] = useState("")
+  const [musicUrl, setMusicUrl] = useState("")
   const [notes, setNotes] = useState("")
   const [instrumentId, setInstrumentId] = useState<string>("")
   const [instruments, setInstruments] = useState<Instrument[]>([])
   const [instrumentElements, setInstrumentElements] = useState<InstrumentElement[]>([])
   const [evaluations, setEvaluations] = useState<Record<string, ElementEvaluation>>({})
-  const [showOptional, setShowOptional] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
@@ -36,7 +33,6 @@ export function NewSongForm() {
       const { data } = await supabase.from("instruments").select("*").order("name")
       if (data) {
         setInstruments(data)
-        // Auto-select if only one instrument
         if (data.length === 1) {
           setInstrumentId(data[0].id)
         }
@@ -61,12 +57,11 @@ export function NewSongForm() {
 
       if (data) {
         setInstrumentElements(data)
-        // Initialize evaluations with null for all elements
         const initialEvals: Record<string, ElementEvaluation> = {}
         data.forEach((elem) => {
           initialEvals[elem.id] = {
             instrument_element_id: elem.id,
-            level: elem.is_mandatory ? 1 : null, // Default mandatory to level 1, optional to null
+            level: 1,
             notes: null,
           }
         })
@@ -75,9 +70,6 @@ export function NewSongForm() {
     }
     loadElements()
   }, [instrumentId, supabase])
-
-  const mandatoryElements = instrumentElements.filter((e) => e.is_mandatory)
-  const optionalElements = instrumentElements.filter((e) => !e.is_mandatory)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -90,13 +82,6 @@ export function NewSongForm() {
       } = await supabase.auth.getUser()
       if (!user) throw new Error("Non authentifié")
 
-      const missingMandatory = mandatoryElements.filter(
-        (elem) => !evaluations[elem.id] || evaluations[elem.id].level === null,
-      )
-      if (missingMandatory.length > 0) {
-        throw new Error("Tous les éléments obligatoires doivent être évalués")
-      }
-
       const { data: song, error: insertError } = await supabase
         .from("songs")
         .insert({
@@ -104,6 +89,8 @@ export function NewSongForm() {
           title,
           artist: artist || null,
           notes: notes || null,
+          partition_url: partitionUrl || null,
+          music_url: musicUrl || null,
           instrument_id: instrumentId || null,
         })
         .select()
@@ -136,173 +123,181 @@ export function NewSongForm() {
     }
   }
 
+  const getLevelLabel = (level: number | null): string => {
+    switch (level) {
+      case 1:
+        return "À peine"
+      case 2:
+        return "Découverte"
+      case 3:
+        return "En cours"
+      case 4:
+        return "Acquis"
+      case 5:
+        return "Maîtrisé"
+      default:
+        return "À peine"
+    }
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-2 mb-2">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour
-            </Button>
-          </Link>
-        </div>
-        <CardTitle className="text-xl sm:text-2xl">Détails du morceau</CardTitle>
-        <CardDescription className="text-sm">
-          Entrez les informations sur le morceau que vous souhaitez apprendre
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="title">Titre du morceau *</Label>
-            <Input
-              id="title"
-              placeholder="ex: Stairway to Heaven"
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+        {/* Left Column - Information sur le morceau */}
+        <div className="space-y-6">
+          <h2 className="font-sans text-[28px] font-black leading-8 text-foreground">
+            Information sur le morceau
+          </h2>
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Titre du morceau *
+            </label>
+            <input
+              type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              style={{ borderWidth: "3px" }}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="artist">Artiste</Label>
-            <Input
-              id="artist"
-              placeholder="ex: Led Zeppelin"
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Artiste
+            </label>
+            <input
+              type="text"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              style={{ borderWidth: "3px" }}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              placeholder="Notes supplémentaires sur ce morceau..."
-              rows={4}
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Lien vers la partition
+            </label>
+            <input
+              type="url"
+              value={partitionUrl}
+              onChange={(e) => setPartitionUrl(e.target.value)}
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              style={{ borderWidth: "3px" }}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Lien vers la musique (Youtube, Spotify, Deezer...)
+            </label>
+            <input
+              type="url"
+              value={musicUrl}
+              onChange={(e) => setMusicUrl(e.target.value)}
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              style={{ borderWidth: "3px" }}
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Notes
+            </label>
+            <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              rows={6}
+              className="w-full px-3 py-2 border-3 border-foreground bg-transparent font-sans text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              style={{ borderWidth: "3px" }}
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="instrument">Instrument *</Label>
-            <Select
-              value={instrumentId}
-              onValueChange={(value) => {
-                if (instruments.length > 1) {
-                  setInstrumentId(value)
-                }
-              }}
-              required
-            >
-              <SelectTrigger id="instrument">
-                <SelectValue placeholder="Sélectionnez un instrument" />
-              </SelectTrigger>
-              <SelectContent>
+        {/* Right Column - Éléments d'apprentissage */}
+        <div className="space-y-6">
+          <h2 className="font-sans text-[28px] font-black leading-8 text-foreground">
+            Éléments d'apprentissage
+          </h2>
+
+          <div className="space-y-1.5">
+            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+              Instrument
+            </label>
+            <div className="relative">
+              <select
+                value={instrumentId}
+                onChange={(e) => setInstrumentId(e.target.value)}
+                required
+                className="w-auto min-w-[130px] h-10 px-3 pr-8 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                style={{ borderWidth: "3px" }}
+              >
+                <option value="">Choisir</option>
                 {instruments.map((instrument) => (
-                  <SelectItem key={instrument.id} value={instrument.id}>
+                  <option key={instrument.id} value={instrument.id}>
                     {instrument.name}
-                  </SelectItem>
+                  </option>
                 ))}
-              </SelectContent>
-            </Select>
-            {instruments.length === 1 && (
-              <p className="text-xs text-muted-foreground">Instrument sélectionné automatiquement</p>
-            )}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" />
+            </div>
           </div>
 
+          {/* Learning Elements */}
           {instrumentId && instrumentElements.length > 0 && (
-            <div className="space-y-4 border-t pt-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-1">Éléments d'apprentissage</h3>
-                <p className="text-sm text-muted-foreground">
-                  Évaluez votre niveau pour chaque élément de l'instrument
-                </p>
-              </div>
-
-              {/* Mandatory elements */}
-              {mandatoryElements.length > 0 && (
-                <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-muted-foreground">Éléments obligatoires</h4>
-                  {mandatoryElements.map((element) => (
-                    <Card key={element.id}>
-                      <CardHeader>
-                        <CardTitle className="text-base">
-                          {element.name}
-                          <span className="ml-2 text-xs font-normal text-destructive">*</span>
-                        </CardTitle>
-                        {element.description && (
-                          <CardDescription className="text-sm">{element.description}</CardDescription>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        <LevelSelector
-                          value={evaluations[element.id]?.level || null}
-                          onChange={(level) =>
-                            setEvaluations((prev) => ({
-                              ...prev,
-                              [element.id]: { ...prev[element.id], level },
-                            }))
-                          }
-                          allowEmpty={false}
-                        />
-                      </CardContent>
-                    </Card>
-                  ))}
+            <div className="space-y-4">
+              {instrumentElements.map((element) => (
+                <div
+                  key={element.id}
+                  className="p-4 border-3 border-foreground"
+                  style={{ borderWidth: "3px" }}
+                >
+                  <div className="space-y-0.5 mb-3">
+                    <h3 className="font-sans text-2xl font-bold text-foreground">
+                      {element.name}
+                    </h3>
+                    {element.description && (
+                      <p className="font-sans text-lg font-medium text-foreground">
+                        {element.description}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <MusicNoteRating
+                      value={evaluations[element.id]?.level || 1}
+                      onChange={(level) =>
+                        setEvaluations((prev) => ({
+                          ...prev,
+                          [element.id]: { ...prev[element.id], level },
+                        }))
+                      }
+                    />
+                    <span className="font-sans text-lg font-medium text-foreground/40">
+                      {getLevelLabel(evaluations[element.id]?.level)}
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              {/* Optional elements - collapsible */}
-              {optionalElements.length > 0 && (
-                <Collapsible open={showOptional} onOpenChange={setShowOptional}>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between bg-transparent" type="button">
-                      <span className="text-sm font-medium">Éléments optionnels ({optionalElements.length})</span>
-                      {showOptional ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-4 mt-4">
-                    {optionalElements.map((element) => (
-                      <Card key={element.id}>
-                        <CardHeader>
-                          <CardTitle className="text-base">{element.name}</CardTitle>
-                          {element.description && (
-                            <CardDescription className="text-sm">{element.description}</CardDescription>
-                          )}
-                        </CardHeader>
-                        <CardContent>
-                          <LevelSelector
-                            value={evaluations[element.id]?.level || null}
-                            onChange={(level) =>
-                              setEvaluations((prev) => ({
-                                ...prev,
-                                [element.id]: { ...prev[element.id], level },
-                              }))
-                            }
-                            allowEmpty={true}
-                          />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
-              )}
+              ))}
             </div>
           )}
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button type="submit" disabled={isLoading || !instrumentId} className="flex-1 w-full">
-              {isLoading ? "Ajout du morceau..." : "Ajouter le morceau"}
+          {/* Validation button */}
+          <div className="flex justify-end pt-4">
+            {error && <p className="text-sm text-destructive mr-4">{error}</p>}
+            <Button
+              type="submit"
+              disabled={isLoading || !instrumentId}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-2xl font-extrabold uppercase px-5 py-3 h-auto flex items-center gap-5"
+            >
+              {isLoading ? "Validation..." : "Valider"}
+              <Plus className="h-4 w-4" strokeWidth={4} />
             </Button>
-            <Link href="/dashboard" className="flex-1">
-              <Button type="button" variant="outline" className="w-full bg-transparent">
-                Annuler
-              </Button>
-            </Link>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </form>
   )
 }
