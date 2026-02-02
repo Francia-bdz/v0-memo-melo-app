@@ -25,11 +25,11 @@ export function DashboardMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-5 border-[3px] border-[#18160C] px-5 py-3 font-sans font-extrabold text-2xl uppercase text-[#18160C] hover:bg-[#E9E5D3] transition-colors">
+        <button className="flex items-center gap-5 border-[3px] border-[#18160C] px-5 py-3 font-sans font-extrabold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer">
           Menu
           <span className="relative w-[16px] h-[16px]">
-            <span className="absolute top-1/2 left-0 w-full h-[4px] bg-[#18160C] -translate-y-1/2" />
-            <span className="absolute left-1/2 top-0 w-[4px] h-full bg-[#18160C] -translate-x-1/2" />
+            <span className="absolute top-1/2 left-0 w-full h-[3px] bg-[#18160C] -translate-y-1/2" />
+            <span className="absolute left-1/2 top-0 w-[3px] h-full bg-[#18160C] -translate-x-1/2" />
           </span>
         </button>
       </DropdownMenuTrigger>
