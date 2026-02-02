@@ -42,6 +42,39 @@ export default async function DashboardPage({
     .order("updated_at", { ascending: false })
     .range(offset, offset + itemsPerPage - 1);
 
+  // Get evaluations for the songs to calculate average scores
+  const songIds = (songs || []).map((s) => s.id);
+  const { data: evaluations } = await supabase
+    .from("evaluations")
+    .select("song_id, instrument_element_id, level, evaluated_at")
+    .in("song_id", songIds.length > 0 ? songIds : ["no-songs"]);
+
+  // Calculate latest evaluation per song/element and then average score per song
+  const songScores: Record<string, number> = {};
+  if (evaluations && evaluations.length > 0) {
+    // Get latest evaluation for each song/element combination
+    const latestEvalMap = new Map<string, { level: number; evaluated_at: string }>();
+    evaluations.forEach((ev) => {
+      const key = `${ev.song_id}-${ev.instrument_element_id}`;
+      const existing = latestEvalMap.get(key);
+      if (!existing || new Date(ev.evaluated_at) > new Date(existing.evaluated_at)) {
+        latestEvalMap.set(key, { level: ev.level, evaluated_at: ev.evaluated_at });
+      }
+    });
+
+    // Calculate average per song
+    const songLevels: Record<string, number[]> = {};
+    latestEvalMap.forEach((value, key) => {
+      const songId = key.split("-")[0];
+      if (!songLevels[songId]) songLevels[songId] = [];
+      songLevels[songId].push(value.level);
+    });
+
+    Object.entries(songLevels).forEach(([songId, levels]) => {
+      songScores[songId] = levels.reduce((sum, l) => sum + l, 0) / levels.length;
+    });
+  }
+
   return (
     <div className="min-h-screen bg-primary p-2 sm:p-3 md:p-4">
       <div className="min-h-[calc(100vh-16px)] sm:min-h-[calc(100vh-24px)] md:min-h-[calc(100vh-32px)] bg-background px-6 sm:px-12 md:px-16 lg:px-20 py-10 sm:py-14 md:py-16">
@@ -71,7 +104,7 @@ export default async function DashboardPage({
         </Button>
 
         {/* Song list */}
-        <SongList songs={songs || []} />
+        <SongList songs={songs || []} songScores={songScores} />
 
         {/* Pagination */}
         {totalPages > 1 && (
