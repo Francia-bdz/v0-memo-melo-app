@@ -6,6 +6,7 @@ import { Music2 } from "lucide-react";
 
 interface SongListProps {
   songs: Song[];
+  songScores?: Record<string, number>;
 }
 
 // Guitar icon SVG component
@@ -65,10 +66,18 @@ function ArrowIcon() {
   );
 }
 
+// Helper function to calculate filled notes based on score
+function getFilledNotesCount(score: number | undefined): number {
+  if (score === undefined || score <= 1) return 0; // Score = 1 or no score: all notes gray
+  if (score >= 5) return 5; // Score = 5: all notes filled
+  return Math.floor(score); // Score in ]1;5[: integer part
+}
+
 // Song card component
-function SongCard({ song }: { song: Song }) {
-  // For now, display 4 filled notes and 1 faded (placeholder for future rating)
-  const filledNotes = 4;
+function SongCard({ song, score }: { song: Song; score?: number }) {
+  console.log("[v0] SongCard - song:", song.title, "score:", score);
+  const filledNotes = getFilledNotesCount(score);
+  console.log("[v0] SongCard - filledNotes:", filledNotes);
   const totalNotes = 5;
 
   return (
@@ -102,7 +111,7 @@ function SongCard({ song }: { song: Song }) {
   );
 }
 
-export function SongList({ songs }: SongListProps) {
+export function SongList({ songs, songScores = {} }: SongListProps) {
   if (songs.length === 0) {
     return (
       <div className="border-[3px] border-dashed border-[#18160C] p-12">
@@ -124,7 +133,7 @@ export function SongList({ songs }: SongListProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {songs.map((song) => (
-        <SongCard key={song.id} song={song} />
+        <SongCard key={song.id} song={song} score={songScores[song.id]} />
       ))}
     </div>
   );
