@@ -53,21 +53,20 @@ export default async function DashboardPage({
   const songScores: Record<string, number> = {};
   if (evaluations && evaluations.length > 0) {
     // Get latest evaluation for each song/element combination
-    const latestEvalMap = new Map<string, { level: number; evaluated_at: string }>();
+    const latestEvalMap = new Map<string, { song_id: string; level: number; evaluated_at: string }>();
     evaluations.forEach((ev) => {
-      const key = `${ev.song_id}-${ev.instrument_element_id}`;
+      const key = `${ev.song_id}|${ev.instrument_element_id}`;
       const existing = latestEvalMap.get(key);
       if (!existing || new Date(ev.evaluated_at) > new Date(existing.evaluated_at)) {
-        latestEvalMap.set(key, { level: ev.level, evaluated_at: ev.evaluated_at });
+        latestEvalMap.set(key, { song_id: ev.song_id, level: ev.level, evaluated_at: ev.evaluated_at });
       }
     });
 
     // Calculate average per song
     const songLevels: Record<string, number[]> = {};
-    latestEvalMap.forEach((value, key) => {
-      const songId = key.split("-")[0];
-      if (!songLevels[songId]) songLevels[songId] = [];
-      songLevels[songId].push(value.level);
+    latestEvalMap.forEach((value) => {
+      if (!songLevels[value.song_id]) songLevels[value.song_id] = [];
+      songLevels[value.song_id].push(value.level);
     });
 
     Object.entries(songLevels).forEach(([songId, levels]) => {
