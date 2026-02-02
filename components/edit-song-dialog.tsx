@@ -122,6 +122,12 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         throw new Error("Tous les éléments obligatoires doivent être évalués")
       }
 
+      // Get current user first
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user) throw new Error("Non authentifié")
+
       const { error: updateError } = await supabase
         .from("songs")
         .update({
@@ -135,24 +141,77 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
       if (updateError) throw updateError
 
-      await supabase.from("evaluations").delete().eq("song_id", song.id)
+      // Get existing evaluations to determine which to update, insert, or delete
+      const { data: existingEvals } = await supabase
+        .from("evaluations")
+        .select("id, instrument_element_id")
+        .eq("song_id", song.id)
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
+      const existingEvalMap = new Map(
+        (existingEvals || []).map((ev) => [ev.instrument_element_id, ev.id])
+      )
 
-      const evaluationsToInsert = Object.values(evaluations)
-        .filter((ev) => ev.level !== null)
-        .map((ev) => ({
-          user_id: user.id,
-          song_id: song.id,
-          instrument_element_id: ev.instrument_element_id,
-          level: ev.level,
-          notes: ev.notes,
-          evaluated_at: new Date().toISOString(),
-        }))
+      // Prepare evaluations to save (those with a level)
+      const evaluationsToSave = Object.values(evaluations).filter((ev) => ev.level !== null)
 
+      // Separate into updates and inserts
+      const evaluationsToUpdate: { id: string; level: number; notes: string | null }[] = []
+      const evaluationsToInsert: {
+        user_id: string
+        song_id: string
+        instrument_element_id: string
+        level: number
+        notes: string | null
+        evaluated_at: string
+      }[] = []
+
+      for (const ev of evaluationsToSave) {
+        const existingId = existingEvalMap.get(ev.instrument_element_id)
+        if (existingId) {
+          // Update existing evaluation
+          evaluationsToUpdate.push({
+            id: existingId,
+            level: ev.level!,
+            notes: ev.notes,
+          })
+          existingEvalMap.delete(ev.instrument_element_id)
+        } else {
+          // Insert new evaluation
+          evaluationsToInsert.push({
+            user_id: user.id,
+            song_id: song.id,
+            instrument_element_id: ev.instrument_element_id,
+            level: ev.level!,
+            notes: ev.notes,
+            evaluated_at: new Date().toISOString(),
+          })
+        }
+      }
+
+      // Delete evaluations that are no longer needed (level set to null)
+      const evaluationsToDelete = Array.from(existingEvalMap.values())
+      if (evaluationsToDelete.length > 0) {
+        const { error: deleteError } = await supabase
+          .from("evaluations")
+          .delete()
+          .in("id", evaluationsToDelete)
+        if (deleteError) throw deleteError
+      }
+
+      // Update existing evaluations
+      for (const evalToUpdate of evaluationsToUpdate) {
+        const { error: updateEvalError } = await supabase
+          .from("evaluations")
+          .update({
+            level: evalToUpdate.level,
+            notes: evalToUpdate.notes,
+            evaluated_at: new Date().toISOString(),
+          })
+          .eq("id", evalToUpdate.id)
+        if (updateEvalError) throw updateEvalError
+      }
+
+      // Insert new evaluations
       if (evaluationsToInsert.length > 0) {
         const { error: evalError } = await supabase.from("evaluations").insert(evaluationsToInsert)
         if (evalError) throw evalError
