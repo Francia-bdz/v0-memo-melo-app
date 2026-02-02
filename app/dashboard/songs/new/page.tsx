@@ -21,8 +21,8 @@ export default async function NewSongPage() {
       <DashboardHeader displayName={profile?.display_name || "Musician"} />
       <main className="container mx-auto px-4 py-8 max-w-2xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Add New Song</h1>
-          <p className="text-muted-foreground mt-1">Start tracking your learning progress for a new song</p>
+          <h1 className="text-3xl font-bold tracking-tight">Ajouter une mélodie</h1>
+          <p className="text-muted-foreground mt-1">Une nouvelle corde à ta guitare</p>
         </div>
         <NewSongForm />
       </main>

@@ -107,14 +107,14 @@ export function SongList({ songs }: SongListProps) {
     return (
       <div className="border-[3px] border-dashed border-[#18160C] p-12">
         <div className="flex flex-col items-center justify-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#E9E5D3]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#18160C]/10">
             <Music2 className="h-10 w-10 text-[#18160C] opacity-50" />
           </div>
           <h3 className="mt-6 text-xl font-semibold text-[#18160C]">
             Aucun morceau pour le moment
           </h3>
           <p className="mt-2 text-center text-sm text-[#18160C] opacity-70 max-w-sm">
-            Commencez votre voyage musical en ajoutant votre premier morceau
+            Commencez ton voyage musical en ajoutant ton premier morceau
           </p>
         </div>
       </div>
