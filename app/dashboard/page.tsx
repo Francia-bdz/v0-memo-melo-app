@@ -74,6 +74,9 @@ export default async function DashboardPage({
     });
   }
 
+  console.log("[v0] Dashboard - evaluations count:", evaluations?.length);
+  console.log("[v0] Dashboard - songScores:", songScores);
+
   return (
     <div className="min-h-screen bg-primary p-2 sm:p-3 md:p-4">
       <div className="min-h-[calc(100vh-16px)] sm:min-h-[calc(100vh-24px)] md:min-h-[calc(100vh-32px)] bg-background px-6 sm:px-12 md:px-16 lg:px-20 py-10 sm:py-14 md:py-16">

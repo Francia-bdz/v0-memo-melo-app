@@ -75,7 +75,9 @@ function getFilledNotesCount(score: number | undefined): number {
 
 // Song card component
 function SongCard({ song, score }: { song: Song; score?: number }) {
+  console.log("[v0] SongCard - song:", song.title, "score:", score);
   const filledNotes = getFilledNotesCount(score);
+  console.log("[v0] SongCard - filledNotes:", filledNotes);
   const totalNotes = 5;
 
   return (
