@@ -126,17 +126,17 @@ export function NewSongForm() {
   const getLevelLabel = (level: number | null): string => {
     switch (level) {
       case 1:
-        return "À peine"
-      case 2:
         return "Découverte"
-      case 3:
+      case 2:
         return "En cours"
+      case 3:
+        return "Acquis de base"
       case 4:
-        return "Acquis"
+        return "Solide"
       case 5:
         return "Maîtrisé"
       default:
-        return "À peine"
+        return "Découverte"
     }
   }
 

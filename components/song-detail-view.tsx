@@ -22,11 +22,11 @@ const getLevelInfo = (level: number | null) => {
   if (level === null) return { label: "Non évalué", color: "bg-muted text-muted-foreground" }
 
   const levels = [
-    { value: 1, label: "À peine", color: "bg-red-500 text-white" },
-    { value: 2, label: "Pas mal", color: "bg-orange-500 text-white" },
-    { value: 3, label: "Familière", color: "bg-yellow-500 text-white" },
-    { value: 4, label: "Débutant", color: "bg-lime-500 text-white" },
-    { value: 5, label: "Maîtrisée", color: "bg-green-500 text-white" },
+    { value: 1, label: "Découverte", color: "bg-red-500 text-white" },
+    { value: 2, label: "En cours", color: "bg-orange-500 text-white" },
+    { value: 3, label: "Acquis de base", color: "bg-yellow-500 text-white" },
+    { value: 4, label: "Solide", color: "bg-lime-500 text-white" },
+    { value: 5, label: "Maîtrisé", color: "bg-green-500 text-white" },
   ]
 
   return levels.find((l) => l.value === level) || { label: "Non évalué", color: "bg-muted text-muted-foreground" }
