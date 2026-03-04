@@ -1,7 +1,5 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-
 interface MusicNoteRatingProps {
   value: number | null
   onChange: (level: number) => void
@@ -42,6 +40,40 @@ export function MusicNoteRating({ value, onChange, max = 5 }: MusicNoteRatingPro
           onClick={() => onChange(level)}
         />
       ))}
+    </div>
+  )
+}
+
+interface MusicNoteDisplayProps {
+  value: number | null
+  max?: number
+  label?: string
+}
+
+export function MusicNoteDisplay({ value, max = 5, label }: MusicNoteDisplayProps) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-0.25">
+        {Array.from({ length: max }, (_, i) => i + 1).map((level) => (
+          <span key={level} className="w-6 h-6 flex items-center justify-center">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.6667 11.9997V1.99967C14.6667 1.82286 14.5965 1.65329 14.4714 1.52827C14.3464 1.40325 14.1769 1.33301 14 1.33301H6.00004C5.82323 1.33301 5.65366 1.40325 5.52864 1.52827C5.40361 1.65329 5.33337 1.82286 5.33337 1.99967V9.70367C4.92981 9.46372 4.46954 9.33577 4.00004 9.33301C3.47263 9.33301 2.95705 9.4894 2.51852 9.78242C2.07999 10.0754 1.7382 10.4919 1.53636 10.9792C1.33453 11.4665 1.28172 12.0026 1.38461 12.5199C1.48751 13.0372 1.74148 13.5124 2.11442 13.8853C2.48736 14.2582 2.96252 14.5122 3.4798 14.6151C3.99708 14.718 4.53326 14.6652 5.02053 14.4634C5.5078 14.2615 5.92428 13.9197 6.21729 13.4812C6.51031 13.0427 6.66671 12.5271 6.66671 11.9997V2.66634H13.3334V9.70367C12.9298 9.46372 12.4695 9.33577 12 9.33301C11.4726 9.33301 10.9571 9.4894 10.5185 9.78242C10.08 10.0754 9.7382 10.4919 9.53636 10.9792C9.33453 11.4665 9.28172 12.0026 9.38461 12.5199C9.48751 13.0372 9.74148 13.5122 10.1144 13.8853C10.4874 14.2582 10.9625 14.5122 11.4798 14.6151C11.9971 14.718 12.5333 14.6652 13.0205 14.4634C13.5078 14.2615 13.9243 13.9197 14.2173 13.4812C14.5103 13.0427 14.6667 12.5271 14.6667 11.9997Z"
+                fill={value !== null && level <= value ? "#18160C" : "rgba(24, 22, 12, 0.2)"}
+              />
+            </svg>
+          </span>
+        ))}
+      </div>
+      {label && (
+        <span className="text-sm text-muted-foreground ml-1">{label}</span>
+      )}
     </div>
   )
 }

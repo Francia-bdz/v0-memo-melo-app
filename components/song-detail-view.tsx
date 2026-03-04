@@ -3,33 +3,36 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ArrowLeft, Edit, Trash2, ChevronDown, ChevronRight, FileMusic, Music } from "lucide-react"
+import { ChevronRight, Edit } from "lucide-react"
 import Link from "next/link"
 import type { Song, Instrument, InstrumentElement, Evaluation } from "@/lib/types/database"
 import { DeleteSongDialog } from "@/components/delete-song-dialog"
 import { EditSongDialog } from "@/components/edit-song-dialog"
-import { cn } from "@/lib/utils"
+import { MusicNoteDisplay } from "@/components/music-note-rating"
 
 interface SongDetailViewProps {
   song: Song
 }
 
-const getLevelInfo = (level: number | null) => {
-  if (level === null) return { label: "Non évalué", color: "bg-muted text-muted-foreground" }
+const getLevelLabel = (level: number | null) => {
+  if (level === null) return "Non evalue"
+  const labels: Record<number, string> = {
+    1: "Decouverte",
+    2: "En cours",
+    3: "Acquis de base",
+    4: "Solide",
+    5: "Maitrise",
+  }
+  return labels[level] || "Non evalue"
+}
 
-  const levels = [
-    { value: 1, label: "Découverte", color: "bg-red-500 text-white" },
-    { value: 2, label: "En cours", color: "bg-orange-500 text-white" },
-    { value: 3, label: "Acquis de base", color: "bg-yellow-500 text-white" },
-    { value: 4, label: "Solide", color: "bg-lime-500 text-white" },
-    { value: 5, label: "Maîtrisé", color: "bg-green-500 text-white" },
-  ]
-
-  return levels.find((l) => l.value === level) || { label: "Non évalué", color: "bg-muted text-muted-foreground" }
+// Compute an overall average level from all evaluations
+const getAverageLevel = (evaluations: Record<string, Evaluation>): number | null => {
+  const values = Object.values(evaluations)
+  if (values.length === 0) return null
+  const sum = values.reduce((acc, ev) => acc + (ev.level || 0), 0)
+  return Math.round(sum / values.length)
 }
 
 export function SongDetailView({ song }: SongDetailViewProps) {
@@ -46,7 +49,6 @@ export function SongDetailView({ song }: SongDetailViewProps) {
     const loadData = async () => {
       if (!song.instrument_id) return
 
-      // Load instrument
       const { data: instrumentData } = await supabase
         .from("instruments")
         .select("*")
@@ -57,7 +59,6 @@ export function SongDetailView({ song }: SongDetailViewProps) {
         setInstrument(instrumentData)
       }
 
-      // Load instrument elements
       const { data: elementsData } = await supabase
         .from("instrument_elements")
         .select("*")
@@ -86,149 +87,166 @@ export function SongDetailView({ song }: SongDetailViewProps) {
 
   const mandatoryElements = instrumentElements.filter((e) => e.is_mandatory)
   const optionalElements = instrumentElements.filter((e) => !e.is_mandatory)
+  const averageLevel = getAverageLevel(evaluations)
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              <span className="hidden sm:inline">Retour aux morceaux</span>
-              <span className="sm:hidden">Retour</span>
-            </Button>
-          </Link>
+      {/* Top bar: Back link + Menu */}
+      <div className="flex items-start justify-between">
+        <Link
+          href="/dashboard"
+          className="font-caprasimo text-2xl sm:text-3xl md:text-4xl text-foreground hover:opacity-70 transition-opacity"
+        >
+          {"< Retour au repertoire"}
+        </Link>
+      </div>
+
+      {/* Song header card */}
+      <div className="border-[3px] border-foreground p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 space-y-1">
+            <h2 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
+              {song.title}
+            </h2>
+            {song.artist && (
+              <p className="font-sans text-base sm:text-lg text-foreground">
+                {song.artist}
+              </p>
+            )}
+            <div className="pt-2">
+              <MusicNoteDisplay value={averageLevel} label={getLevelLabel(averageLevel)} />
+            </div>
+          </div>
+          <button
+            onClick={() => setShowEditDialog(true)}
+            className="p-2 hover:opacity-70 transition-opacity"
+            aria-label="Modifier le morceau"
+          >
+            <Edit className="h-6 w-6 text-foreground" />
+          </button>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" onClick={() => setShowEditDialog(true)} className="flex-1 sm:flex-none">
-            <Edit className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Modifier</span>
-            <span className="sm:hidden">Éditer</span>
-          </Button>
-          <Button variant="outline" onClick={() => setShowDeleteDialog(true)} className="flex-1 sm:flex-none">
-            <Trash2 className="h-4 w-4 mr-2 text-destructive" />
-            <span className="hidden sm:inline">Supprimer</span>
-            <span className="sm:hidden">Suppr.</span>
-          </Button>
+
+        {/* Notes section */}
+        {song.notes && (
+          <div className="mt-4 pt-4 border-t border-foreground/20">
+            <p className="font-sans text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap items-center justify-end gap-3 mt-5">
+          {song.music_url && (
+            <a
+              href={song.music_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-5 py-2.5 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+            >
+              Ecouter la musique
+            </a>
+          )}
+          {song.partition_url && (
+            <a
+              href={song.partition_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-5 py-2.5 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+            >
+              Voir la partition
+            </a>
+          )}
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl sm:text-3xl">{song.title}</CardTitle>
-          {song.artist && <CardDescription className="text-sm sm:text-base">par {song.artist}</CardDescription>}
-          {instrument && (
-            <div className="pt-2">
-              <Badge variant="secondary" className="text-xs sm:text-sm">
-                {instrument.name}
-              </Badge>
-            </div>
-          )}
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Links */}
-          <div className="flex flex-wrap gap-3">
-            {song.partition_url && (
-              <a
-                href={song.partition_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
-              >
-                <FileMusic className="h-4 w-4" />
-                Voir la partition
-              </a>
-            )}
-            {song.music_url && (
-              <a
-                href={song.music_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
-              >
-                <Music className="h-4 w-4" />
-                Écouter la musique
-              </a>
-            )}
-          </div>
-          
-          {song.notes && (
-            <div className="rounded-lg bg-muted p-3 sm:p-4">
-              <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {instrument && instrumentElements.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg sm:text-xl">Éléments d'apprentissage</CardTitle>
-            <CardDescription className="text-sm">Votre progression pour chaque élément</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Mandatory elements */}
-            {mandatoryElements.length > 0 && (
-              <div className="space-y-3">
-                <h4 className="text-sm font-medium text-muted-foreground">Éléments obligatoires</h4>
-                <div className="space-y-2">
-                  {mandatoryElements.map((element) => {
-                    const evaluation = evaluations[element.id]
-                    const levelInfo = getLevelInfo(evaluation?.level || null)
-
-                    return (
-                      <div
-                        key={element.id}
-                        className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg border bg-card"
-                      >
-                        <div className="flex-1">
-                          <div className="font-medium text-sm sm:text-base">{element.name}</div>
-                          {element.description && (
-                            <div className="text-xs sm:text-sm text-muted-foreground">{element.description}</div>
-                          )}
-                        </div>
-                        <Badge className={cn("ml-0 sm:ml-4 self-start sm:self-center", levelInfo.color)}>
-                          {levelInfo.label}
-                        </Badge>
-                      </div>
-                    )
-                  })}
+      {/* Elements de base */}
+      {instrument && mandatoryElements.length > 0 && (
+        <div className="border-[3px] border-foreground p-5 sm:p-6">
+          <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground mb-5">
+            Elements de base
+          </h3>
+          <div className="space-y-5">
+            {mandatoryElements.map((element) => {
+              const evaluation = evaluations[element.id]
+              const level = evaluation?.level || null
+              return (
+                <div key={element.id}>
+                  <h4 className="font-sans font-bold text-base sm:text-lg text-foreground">
+                    {element.name}
+                  </h4>
+                  {element.description && (
+                    <p className="font-sans text-sm text-foreground/80 mt-0.5">
+                      {element.description}
+                    </p>
+                  )}
+                  <div className="mt-2">
+                    <MusicNoteDisplay value={level} label={getLevelLabel(level)} />
+                  </div>
                 </div>
-              </div>
-            )}
-
-            {/* Optional elements - collapsible */}
-            {optionalElements.length > 0 && (
-              <Collapsible open={showOptional} onOpenChange={setShowOptional}>
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="w-full justify-between bg-transparent" type="button">
-                    <span className="text-sm font-medium">Éléments optionnels ({optionalElements.length})</span>
-                    {showOptional ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="space-y-2 mt-3">
-                  {optionalElements.map((element) => {
-                    const evaluation = evaluations[element.id]
-                    const levelInfo = getLevelInfo(evaluation?.level || null)
-
-                    return (
-                      <div key={element.id} className="flex items-center justify-between p-3 rounded-lg border bg-card">
-                        <div className="flex-1">
-                          <div className="font-medium">{element.name}</div>
-                          {element.description && (
-                            <div className="text-sm text-muted-foreground">{element.description}</div>
-                          )}
-                        </div>
-                        <Badge className={cn("ml-4", levelInfo.color)}>{levelInfo.label}</Badge>
-                      </div>
-                    )
-                  })}
-                </CollapsibleContent>
-              </Collapsible>
-            )}
-          </CardContent>
-        </Card>
+              )
+            })}
+          </div>
+        </div>
       )}
+
+      {/* Elements optionnels - collapsible */}
+      {instrument && optionalElements.length > 0 && (
+        <Collapsible open={showOptional} onOpenChange={setShowOptional}>
+          <div className="border-[3px] border-foreground">
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full flex items-center justify-between p-5 sm:p-6 cursor-pointer hover:bg-foreground/5 transition-colors"
+              >
+                <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
+                  Elements optionnels
+                </h3>
+                <ChevronRight
+                  className={`h-7 w-7 text-foreground transition-transform ${showOptional ? "rotate-90" : ""}`}
+                />
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-5 sm:px-6 pb-5 sm:pb-6 space-y-5">
+                {optionalElements.map((element) => {
+                  const evaluation = evaluations[element.id]
+                  const level = evaluation?.level || null
+                  return (
+                    <div key={element.id}>
+                      <h4 className="font-sans font-bold text-base sm:text-lg text-foreground">
+                        {element.name}
+                      </h4>
+                      {element.description && (
+                        <p className="font-sans text-sm text-foreground/80 mt-0.5">
+                          {element.description}
+                        </p>
+                      )}
+                      <div className="mt-2">
+                        <MusicNoteDisplay value={level} label={getLevelLabel(level)} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+      )}
+
+      {/* Bottom action buttons */}
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        <button
+          onClick={() => setShowEditDialog(true)}
+          className="inline-flex items-center px-6 py-3 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+        >
+          Mettre a jour
+        </button>
+        <button
+          onClick={() => setShowDeleteDialog(true)}
+          className="inline-flex items-center px-6 py-3 bg-destructive font-sans font-extrabold text-sm uppercase text-destructive-foreground hover:bg-destructive/90 transition-colors"
+        >
+          Supprimer
+        </button>
+      </div>
 
       <EditSongDialog
         song={song}
