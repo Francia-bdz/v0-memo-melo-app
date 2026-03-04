@@ -313,7 +313,7 @@ export function NewSongForm() {
                     ) : (
                       <ChevronDown className="h-5 w-5" />
                     )}
-                    {"Éléments optionnels (" + optionalElements.length + ")"}
+                    {"Éléments optionnels"}
                   </button>
 
                   {showOptionalElements && (
