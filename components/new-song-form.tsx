@@ -142,9 +142,8 @@ export function NewSongForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-        {/* Left Column - Information sur le morceau */}
-        <div className="space-y-6">
+      <div className="flex flex-col gap-6">
+        <div className="space-y-6 max-w-3xl">
           <h2 className="font-sans text-[28px] font-black leading-8 text-foreground">
             Information sur le morceau
           </h2>
@@ -158,7 +157,7 @@ export function NewSongForm() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderWidth: "3px" }}
             />
           </div>
@@ -171,7 +170,7 @@ export function NewSongForm() {
               type="text"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderWidth: "3px" }}
             />
           </div>
@@ -184,7 +183,7 @@ export function NewSongForm() {
               type="url"
               value={partitionUrl}
               onChange={(e) => setPartitionUrl(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderWidth: "3px" }}
             />
           </div>
@@ -197,7 +196,7 @@ export function NewSongForm() {
               type="url"
               value={musicUrl}
               onChange={(e) => setMusicUrl(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
               style={{ borderWidth: "3px" }}
             />
           </div>
@@ -209,8 +208,8 @@ export function NewSongForm() {
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              rows={6}
-              className="w-full px-3 py-2 border-3 border-foreground bg-transparent font-sans text-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              rows={4}
+              className="w-full px-3 py-2 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
               style={{ borderWidth: "3px" }}
             />
           </div>
@@ -226,12 +225,12 @@ export function NewSongForm() {
             <label className="font-sans text-xl font-extrabold uppercase text-foreground">
               Instrument
             </label>
-            <div className="relative">
+              <div className="relative w-fit">
               <select
                 value={instrumentId}
                 onChange={(e) => setInstrumentId(e.target.value)}
                 required
-                className="w-auto min-w-[130px] h-10 px-3 pr-8 border-3 border-foreground bg-transparent font-sans text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
+                className="w-full min-w-[180px] h-10 px-3 pr-10 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
                 style={{ borderWidth: "3px" }}
               >
                 <option value="">Choisir</option>
@@ -241,7 +240,10 @@ export function NewSongForm() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 pointer-events-none" />
+
+              <ChevronDown
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground pointer-events-none"
+              />
             </div>
           </div>
 
