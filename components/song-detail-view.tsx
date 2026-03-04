@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ArrowLeft, Edit, Trash2, ChevronDown, ChevronRight } from "lucide-react"
+import { ArrowLeft, Edit, Trash2, ChevronDown, ChevronRight, FileMusic, Music } from "lucide-react"
 import Link from "next/link"
 import type { Song, Instrument, InstrumentElement, Evaluation } from "@/lib/types/database"
 import { DeleteSongDialog } from "@/components/delete-song-dialog"
@@ -22,11 +22,11 @@ const getLevelInfo = (level: number | null) => {
   if (level === null) return { label: "Non évalué", color: "bg-muted text-muted-foreground" }
 
   const levels = [
-    { value: 1, label: "À peine", color: "bg-red-500 text-white" },
-    { value: 2, label: "Pas mal", color: "bg-orange-500 text-white" },
-    { value: 3, label: "Familière", color: "bg-yellow-500 text-white" },
-    { value: 4, label: "Débutant", color: "bg-lime-500 text-white" },
-    { value: 5, label: "Maîtrisée", color: "bg-green-500 text-white" },
+    { value: 1, label: "Découverte", color: "bg-red-500 text-white" },
+    { value: 2, label: "En cours", color: "bg-orange-500 text-white" },
+    { value: 3, label: "Acquis de base", color: "bg-yellow-500 text-white" },
+    { value: 4, label: "Solide", color: "bg-lime-500 text-white" },
+    { value: 5, label: "Maîtrisé", color: "bg-green-500 text-white" },
   ]
 
   return levels.find((l) => l.value === level) || { label: "Non évalué", color: "bg-muted text-muted-foreground" }
@@ -125,7 +125,33 @@ export function SongDetailView({ song }: SongDetailViewProps) {
             </div>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Links */}
+          <div className="flex flex-wrap gap-3">
+            {song.partition_url && (
+              <a
+                href={song.partition_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
+              >
+                <FileMusic className="h-4 w-4" />
+                Voir la partition
+              </a>
+            )}
+            {song.music_url && (
+              <a
+                href={song.music_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border bg-card hover:bg-muted transition-colors text-sm"
+              >
+                <Music className="h-4 w-4" />
+                Écouter la musique
+              </a>
+            )}
+          </div>
+          
           {song.notes && (
             <div className="rounded-lg bg-muted p-3 sm:p-4">
               <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-wrap">{song.notes}</p>

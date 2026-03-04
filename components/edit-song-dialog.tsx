@@ -26,6 +26,8 @@ interface EditSongDialogProps {
 export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSongDialogProps) {
   const [title, setTitle] = useState(song.title)
   const [artist, setArtist] = useState(song.artist || "")
+  const [partitionUrl, setPartitionUrl] = useState(song.partition_url || "")
+  const [musicUrl, setMusicUrl] = useState(song.music_url || "")
   const [notes, setNotes] = useState(song.notes || "")
   const [instrumentId, setInstrumentId] = useState<string>(song.instrument_id || "")
   const [instruments, setInstruments] = useState<Instrument[]>([])
@@ -133,6 +135,8 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         .update({
           title,
           artist: artist || null,
+          partition_url: partitionUrl || null,
+          music_url: musicUrl || null,
           notes: notes || null,
           instrument_id: instrumentId || null,
           updated_at: new Date().toISOString(),
@@ -241,6 +245,14 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
           <div className="space-y-2">
             <Label htmlFor="edit-artist">Artiste</Label>
             <Input id="edit-artist" value={artist} onChange={(e) => setArtist(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-partition-url">Lien vers la partition</Label>
+            <Input id="edit-partition-url" type="url" value={partitionUrl} onChange={(e) => setPartitionUrl(e.target.value)} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-music-url">Lien vers la musique (Youtube, Spotify, Deezer...)</Label>
+            <Input id="edit-music-url" type="url" value={musicUrl} onChange={(e) => setMusicUrl(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="edit-notes">Notes</Label>
