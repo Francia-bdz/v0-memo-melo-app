@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, ChevronDown } from "lucide-react"
+import { Plus, ChevronDown, ChevronUp } from "lucide-react"
 import type { Instrument, InstrumentElement, ElementEvaluation } from "@/lib/types/database"
 import { MusicNoteRating } from "@/components/music-note-rating"
 
@@ -25,6 +25,8 @@ export function NewSongForm() {
   const [evaluations, setEvaluations] = useState<Record<string, ElementEvaluation>>({})
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showOptionalElements, setShowOptionalElements] = useState(false)
+  const [activatedOptionalElements, setActivatedOptionalElements] = useState<Set<string>>(new Set())
   const router = useRouter()
   const supabase = createClient()
 
@@ -61,11 +63,13 @@ export function NewSongForm() {
         data.forEach((elem) => {
           initialEvals[elem.id] = {
             instrument_element_id: elem.id,
-            level: 1,
+            level: elem.is_mandatory ? 1 : null,
             notes: null,
           }
         })
         setEvaluations(initialEvals)
+        setActivatedOptionalElements(new Set())
+        setShowOptionalElements(false)
       }
     }
     loadElements()
@@ -136,8 +140,19 @@ export function NewSongForm() {
       case 5:
         return "Maîtrisé"
       default:
-        return "Découverte"
+        return "Non évalué"
     }
+  }
+
+  const mandatoryElements = instrumentElements.filter((el) => el.is_mandatory)
+  const optionalElements = instrumentElements.filter((el) => !el.is_mandatory)
+
+  const handleOptionalRating = (elementId: string, level: number) => {
+    setActivatedOptionalElements((prev) => new Set(prev).add(elementId))
+    setEvaluations((prev) => ({
+      ...prev,
+      [elementId]: { ...prev[elementId], level },
+    }))
   }
 
   return (
@@ -250,7 +265,8 @@ export function NewSongForm() {
           {/* Learning Elements */}
           {instrumentId && instrumentElements.length > 0 && (
             <div className="space-y-4">
-              {instrumentElements.map((element) => (
+              {/* Mandatory elements */}
+              {mandatoryElements.map((element) => (
                 <div
                   key={element.id}
                   className="p-4 border-3 border-foreground"
@@ -269,7 +285,7 @@ export function NewSongForm() {
                   
                   <div className="flex items-center gap-3">
                     <MusicNoteRating
-                      value={evaluations[element.id]?.level || 1}
+                      value={evaluations[element.id]?.level ?? null}
                       onChange={(level) =>
                         setEvaluations((prev) => ({
                           ...prev,
@@ -278,11 +294,67 @@ export function NewSongForm() {
                       }
                     />
                     <span className="font-sans text-lg font-medium text-foreground/40">
-                      {getLevelLabel(evaluations[element.id]?.level)}
+                      {getLevelLabel(evaluations[element.id]?.level ?? null)}
                     </span>
                   </div>
                 </div>
               ))}
+
+              {/* Optional elements toggle */}
+              {optionalElements.length > 0 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setShowOptionalElements(!showOptionalElements)}
+                    className="flex items-center gap-2 font-sans text-lg font-bold text-foreground/60 hover:text-foreground transition-colors cursor-pointer"
+                  >
+                    {showOptionalElements ? (
+                      <ChevronUp className="h-5 w-5" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5" />
+                    )}
+                    {"Éléments optionnels (" + optionalElements.length + ")"}
+                  </button>
+
+                  {showOptionalElements && (
+                    <div className="space-y-4">
+                      {optionalElements.map((element) => {
+                        const isActivated = activatedOptionalElements.has(element.id)
+                        const currentLevel = evaluations[element.id]?.level ?? null
+
+                        return (
+                          <div
+                            key={element.id}
+                            className="p-4 border-3 border-foreground"
+                            style={{ borderWidth: "3px" }}
+                          >
+                            <div className="space-y-0.5 mb-3">
+                              <h3 className="font-sans text-2xl font-bold text-foreground">
+                                {element.name}
+                              </h3>
+                              {element.description && (
+                                <p className="font-sans text-lg font-medium text-foreground">
+                                  {element.description}
+                                </p>
+                              )}
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                              <MusicNoteRating
+                                value={currentLevel}
+                                onChange={(level) => handleOptionalRating(element.id, level)}
+                              />
+                              <span className="font-sans text-lg font-medium text-foreground/40">
+                                {isActivated ? getLevelLabel(currentLevel) : "Non évalué"}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
 

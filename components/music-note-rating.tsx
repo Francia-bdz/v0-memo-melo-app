@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 
 interface MusicNoteRatingProps {
-  value: number
+  value: number | null
   onChange: (level: number) => void
   max?: number
 }
@@ -38,7 +38,7 @@ export function MusicNoteRating({ value, onChange, max = 5 }: MusicNoteRatingPro
       {Array.from({ length: max }, (_, i) => i + 1).map((level) => (
         <MusicNote
           key={level}
-          filled={level <= value}
+          filled={value !== null && level <= value}
           onClick={() => onChange(level)}
         />
       ))}
