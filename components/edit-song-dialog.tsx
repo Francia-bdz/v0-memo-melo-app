@@ -232,12 +232,12 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
       <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-background border-[3px] border-foreground p-0 gap-0 rounded-none">
         <form onSubmit={handleSubmit} className="flex flex-col">
           {/* Header */}
-          <div className="p-5 sm:p-6 border-b-[3px] border-foreground">
+          <div className="px-5 sm:px-6 pt-6">
             <h2 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
-              Modifier le morceau
+              Mettre à jour la mélodie
             </h2>
-            <p className="font-sans text-base text-muted-foreground mt-1">
-              Mettre a jour les details de ce morceau
+            <p className=" text-base text-foreground mt-1">
+              Spoiler : Tu joues déjà mieux qu'hier
             </p>
           </div>
 
@@ -341,7 +341,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
               {/* Mandatory elements */}
               {mandatoryElements.length > 0 && (
                 <div className="mx-5 sm:mx-6 border-[3px] border-foreground p-5 sm:p-6 mb-5">
-                  <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground mb-5">
+                  <h3 className="font-caprasimo text-xl sm:text-2xl text-foreground mb-5">
                     Elements de base
                   </h3>
                   <div className="space-y-6">
@@ -387,9 +387,9 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
                       <CollapsibleTrigger asChild>
                         <button
                           type="button"
-                          className="w-full flex items-center justify-between p-5 sm:p-6 cursor-pointer hover:bg-foreground/5 transition-colors"
+                          className="w-full flex items-center justify-between p-3 sm:p-4 cursor-pointer hover:bg-foreground/5 transition-colors"
                         >
-                          <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
+                          <h3 className="font-caprasimo text-xl sm:text-2xl text-foreground">
                             Elements optionnels
                           </h3>
                           <ChevronRight
@@ -445,7 +445,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
           )}
 
           {/* Action buttons */}
-          <div className="p-5 sm:p-6 flex flex-wrap items-center justify-end gap-3 border-t-[3px] border-foreground">
+          <div className="p-5 sm:p-6 flex flex-wrap items-center justify-end gap-3 border-foreground">
             <button
               type="button"
               onClick={() => onOpenChange(false)}

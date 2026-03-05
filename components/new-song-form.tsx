@@ -165,7 +165,7 @@ export function NewSongForm() {
 
           <div className="space-y-1.5">
             <label className="font-sans text-xl font-extrabold uppercase text-foreground">
-              Titre du morceau *
+              Titre du morceau <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -236,7 +236,7 @@ export function NewSongForm() {
 
           <div className="space-y-1.5">
             <label className="font-sans text-xl font-extrabold uppercase text-foreground">
-              Instrument
+              Instrument <span className="text-destructive">*</span>
             </label>
               <div className="relative w-fit">
               <select
@@ -272,7 +272,7 @@ export function NewSongForm() {
                 >
                   <div className="space-y-0.5 mb-3">
                     <h3 className="font-sans text-2xl font-bold text-foreground">
-                      {element.name}
+                      {element.name} <span className="text-destructive">*</span>
                     </h3>
                     {element.description && (
                       <p className="font-sans text-lg font-regular text-foreground">
