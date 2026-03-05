@@ -4,23 +4,32 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ChevronDown, ChevronRight } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import type { Song, Instrument, InstrumentElement, ElementEvaluation } from "@/lib/types/database"
-import { LevelSelector } from "@/components/level-selector"
+import { MusicNoteRating } from "@/components/music-note-rating"
 
 interface EditSongDialogProps {
   song: Song
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: () => void
+}
+
+const getLevelLabel = (level: number | null) => {
+  if (level === null) return "Non evalue"
+  const labels: Record<number, string> = {
+    1: "Decouverte",
+    2: "En cours",
+    3: "Acquis de base",
+    4: "Solide",
+    5: "Maitrise",
+  }
+  return labels[level] || "Non evalue"
 }
 
 export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSongDialogProps) {
@@ -42,13 +51,11 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
     if (!open) return
 
     const loadData = async () => {
-      // Load instruments
       const { data: instrumentsData } = await supabase.from("instruments").select("*").order("name")
       if (instrumentsData) {
         setInstruments(instrumentsData)
       }
 
-      // Load existing evaluations for this song
       if (song.instrument_id) {
         const { data: evalsData } = await supabase.from("evaluations").select("*").eq("song_id", song.id)
 
@@ -86,7 +93,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
       if (data) {
         setInstrumentElements(data)
-        // Initialize evaluations for new elements not yet evaluated
         setEvaluations((prev) => {
           const updated = { ...prev }
           data.forEach((elem) => {
@@ -121,14 +127,13 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         (elem) => !evaluations[elem.id] || evaluations[elem.id].level === null,
       )
       if (missingMandatory.length > 0) {
-        throw new Error("Tous les éléments obligatoires doivent être évalués")
+        throw new Error("Tous les elements obligatoires doivent etre evalues")
       }
 
-      // Get current user first
       const {
         data: { user },
       } = await supabase.auth.getUser()
-      if (!user) throw new Error("Non authentifié")
+      if (!user) throw new Error("Non authentifie")
 
       const { error: updateError } = await supabase
         .from("songs")
@@ -145,7 +150,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
       if (updateError) throw updateError
 
-      // Get existing evaluations to determine which to update, insert, or delete
       const { data: existingEvals } = await supabase
         .from("evaluations")
         .select("id, instrument_element_id")
@@ -155,10 +159,8 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         (existingEvals || []).map((ev) => [ev.instrument_element_id, ev.id])
       )
 
-      // Prepare evaluations to save (those with a level)
       const evaluationsToSave = Object.values(evaluations).filter((ev) => ev.level !== null)
 
-      // Separate into updates and inserts
       const evaluationsToUpdate: { id: string; level: number; notes: string | null }[] = []
       const evaluationsToInsert: {
         user_id: string
@@ -172,7 +174,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
       for (const ev of evaluationsToSave) {
         const existingId = existingEvalMap.get(ev.instrument_element_id)
         if (existingId) {
-          // Update existing evaluation
           evaluationsToUpdate.push({
             id: existingId,
             level: ev.level!,
@@ -180,7 +181,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
           })
           existingEvalMap.delete(ev.instrument_element_id)
         } else {
-          // Insert new evaluation
           evaluationsToInsert.push({
             user_id: user.id,
             song_id: song.id,
@@ -192,7 +192,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         }
       }
 
-      // Delete evaluations that are no longer needed (level set to null)
       const evaluationsToDelete = Array.from(existingEvalMap.values())
       if (evaluationsToDelete.length > 0) {
         const { error: deleteError } = await supabase
@@ -202,7 +201,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         if (deleteError) throw deleteError
       }
 
-      // Update existing evaluations
       for (const evalToUpdate of evaluationsToUpdate) {
         const { error: updateEvalError } = await supabase
           .from("evaluations")
@@ -215,7 +213,6 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
         if (updateEvalError) throw updateEvalError
       }
 
-      // Insert new evaluations
       if (evaluationsToInsert.length > 0) {
         const { error: evalError } = await supabase.from("evaluations").insert(evaluationsToInsert)
         if (evalError) throw evalError
@@ -232,137 +229,237 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">Modifier le morceau</DialogTitle>
-          <DialogDescription className="text-sm">Mettre à jour les détails de ce morceau</DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="edit-title">Titre du morceau *</Label>
-            <Input id="edit-title" required value={title} onChange={(e) => setTitle(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-artist">Artiste</Label>
-            <Input id="edit-artist" value={artist} onChange={(e) => setArtist(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-partition-url">Lien vers la partition</Label>
-            <Input id="edit-partition-url" type="url" value={partitionUrl} onChange={(e) => setPartitionUrl(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-music-url">Lien vers la musique (Youtube, Spotify, Deezer...)</Label>
-            <Input id="edit-music-url" type="url" value={musicUrl} onChange={(e) => setMusicUrl(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="edit-notes">Notes</Label>
-            <Textarea id="edit-notes" rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} />
+      <DialogContent showCloseButton={false} className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-background border-[3px] border-foreground p-0 gap-0 rounded-none">
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          {/* Header */}
+          <div className="p-5 sm:p-6 border-b-[3px] border-foreground">
+            <h2 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
+              Modifier le morceau
+            </h2>
+            <p className="font-sans text-base text-muted-foreground mt-1">
+              Mettre a jour les details de ce morceau
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="edit-instrument">Instrument *</Label>
-            <Select value={instrumentId} onValueChange={setInstrumentId} required disabled={instruments.length === 1}>
-              <SelectTrigger id="edit-instrument">
-                <SelectValue placeholder="Sélectionnez un instrument" />
-              </SelectTrigger>
-              <SelectContent>
-                {instruments.map((instrument) => (
-                  <SelectItem key={instrument.id} value={instrument.id}>
-                    {instrument.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Form fields */}
+          <div className="p-5 sm:p-6 space-y-5">
+            {/* Title */}
+            <div className="space-y-2">
+              <label htmlFor="edit-title" className="font-sans text-lg font-bold text-foreground">
+                Titre du morceau <span className="text-destructive">*</span>
+              </label>
+              <Input
+                id="edit-title"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="border-[2px] border-foreground bg-transparent font-sans text-base h-12 px-4 focus-visible:ring-primary"
+              />
+            </div>
 
-          {instrumentId && instrumentElements.length > 0 && (
-            <div className="space-y-4 border-t pt-4">
-              <div>
-                <h3 className="text-base font-semibold mb-1">Éléments d'apprentissage</h3>
-                <p className="text-sm text-muted-foreground">Mettez à jour votre niveau pour chaque élément</p>
-              </div>
+            {/* Artist */}
+            <div className="space-y-2">
+              <label htmlFor="edit-artist" className="font-sans text-lg font-bold text-foreground">
+                Artiste
+              </label>
+              <Input
+                id="edit-artist"
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                className="border-[2px] border-foreground bg-transparent font-sans text-base h-12 px-4 focus-visible:ring-primary"
+              />
+            </div>
 
-              {mandatoryElements.length > 0 && (
-                <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-muted-foreground">Éléments obligatoires</h4>
-                  {mandatoryElements.map((element) => (
-                    <Card key={element.id}>
-                      <CardHeader>
-                        <CardTitle className="text-sm">
-                          {element.name}
-                          <span className="ml-2 text-xs font-normal text-destructive">*</span>
-                        </CardTitle>
-                        {element.description && (
-                          <CardDescription className="text-xs">{element.description}</CardDescription>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        <LevelSelector
-                          value={evaluations[element.id]?.level || null}
-                          onChange={(level) =>
-                            setEvaluations((prev) => ({
-                              ...prev,
-                              [element.id]: { ...prev[element.id], level },
-                            }))
-                          }
-                          allowEmpty={false}
-                        />
-                      </CardContent>
-                    </Card>
+            {/* Partition URL */}
+            <div className="space-y-2">
+              <label htmlFor="edit-partition-url" className="font-sans text-lg font-bold text-foreground">
+                Lien vers la partition
+              </label>
+              <Input
+                id="edit-partition-url"
+                type="url"
+                value={partitionUrl}
+                onChange={(e) => setPartitionUrl(e.target.value)}
+                className="border-[2px] border-foreground bg-transparent font-sans text-base h-12 px-4 focus-visible:ring-primary"
+              />
+            </div>
+
+            {/* Music URL */}
+            <div className="space-y-2">
+              <label htmlFor="edit-music-url" className="font-sans text-lg font-bold text-foreground">
+                Lien vers la musique
+              </label>
+              <Input
+                id="edit-music-url"
+                type="url"
+                value={musicUrl}
+                onChange={(e) => setMusicUrl(e.target.value)}
+                className="border-[2px] border-foreground bg-transparent font-sans text-base h-12 px-4 focus-visible:ring-primary"
+              />
+            </div>
+
+            {/* Notes */}
+            <div className="space-y-2">
+              <label htmlFor="edit-notes" className="font-sans text-lg font-bold text-foreground">
+                Notes
+              </label>
+              <Textarea
+                id="edit-notes"
+                rows={4}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="border-[2px] border-foreground bg-transparent font-sans text-base px-4 py-3 focus-visible:ring-primary"
+              />
+            </div>
+
+            {/* Instrument selector */}
+            <div className="space-y-2">
+              <label htmlFor="edit-instrument" className="font-sans text-lg font-bold text-foreground">
+                Instrument <span className="text-destructive">*</span>
+              </label>
+              <Select value={instrumentId} onValueChange={setInstrumentId} required disabled={instruments.length === 1}>
+                <SelectTrigger
+                  id="edit-instrument"
+                  className="border-[2px] border-foreground bg-transparent font-sans text-base h-12 px-4"
+                >
+                  <SelectValue placeholder="Selectionnez un instrument" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-[2px] border-foreground">
+                  {instruments.map((instrument) => (
+                    <SelectItem key={instrument.id} value={instrument.id} className="font-sans text-base">
+                      {instrument.name}
+                    </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Evaluation section */}
+          {instrumentId && instrumentElements.length > 0 && (
+            <div className="space-y-0">
+              {/* Mandatory elements */}
+              {mandatoryElements.length > 0 && (
+                <div className="mx-5 sm:mx-6 border-[3px] border-foreground p-5 sm:p-6 mb-5">
+                  <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground mb-5">
+                    Elements de base
+                  </h3>
+                  <div className="space-y-6">
+                    {mandatoryElements.map((element) => {
+                      const currentLevel = evaluations[element.id]?.level ?? null
+                      return (
+                        <div key={element.id}>
+                          <h4 className="font-sans text-xl font-bold text-foreground">
+                            {element.name}
+                            <span className="ml-2 text-sm font-normal text-destructive">*</span>
+                          </h4>
+                          {element.description && (
+                            <p className="font-sans text-base text-foreground mt-0.5">
+                              {element.description}
+                            </p>
+                          )}
+                          <div className="mt-2 flex items-center gap-3">
+                            <MusicNoteRating
+                              value={currentLevel}
+                              onChange={(level) =>
+                                setEvaluations((prev) => ({
+                                  ...prev,
+                                  [element.id]: { ...prev[element.id], level },
+                                }))
+                              }
+                            />
+                            <span className="font-sans text-base text-foreground/40">
+                              {getLevelLabel(currentLevel)}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
 
+              {/* Optional elements - collapsible */}
               {optionalElements.length > 0 && (
-                <Collapsible open={showOptional} onOpenChange={setShowOptional}>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between bg-transparent" type="button">
-                      <span className="text-sm font-medium">Éléments optionnels ({optionalElements.length})</span>
-                      {showOptional ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                    </Button>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-4 mt-4">
-                    {optionalElements.map((element) => (
-                      <Card key={element.id}>
-                        <CardHeader>
-                          <CardTitle className="text-sm">{element.name}</CardTitle>
-                          {element.description && (
-                            <CardDescription className="text-xs">{element.description}</CardDescription>
-                          )}
-                        </CardHeader>
-                        <CardContent>
-                          <LevelSelector
-                            value={evaluations[element.id]?.level || null}
-                            onChange={(level) =>
-                              setEvaluations((prev) => ({
-                                ...prev,
-                                [element.id]: { ...prev[element.id], level },
-                              }))
-                            }
-                            allowEmpty={true}
+                <div className="mx-5 sm:mx-6 mb-5">
+                  <Collapsible open={showOptional} onOpenChange={setShowOptional}>
+                    <div className="border-[3px] border-foreground">
+                      <CollapsibleTrigger asChild>
+                        <button
+                          type="button"
+                          className="w-full flex items-center justify-between p-5 sm:p-6 cursor-pointer hover:bg-foreground/5 transition-colors"
+                        >
+                          <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
+                            Elements optionnels
+                          </h3>
+                          <ChevronRight
+                            className={`h-7 w-7 text-foreground transition-transform ${showOptional ? "rotate-90" : ""}`}
                           />
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                        </button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <div className="px-5 sm:px-6 pb-5 sm:pb-6 space-y-6">
+                          {optionalElements.map((element) => {
+                            const currentLevel = evaluations[element.id]?.level ?? null
+                            return (
+                              <div key={element.id}>
+                                <h4 className="font-sans text-xl font-bold text-foreground">
+                                  {element.name}
+                                </h4>
+                                {element.description && (
+                                  <p className="font-sans text-base text-foreground mt-0.5">
+                                    {element.description}
+                                  </p>
+                                )}
+                                <div className="mt-2 flex items-center gap-3">
+                                  <MusicNoteRating
+                                    value={currentLevel}
+                                    onChange={(level) =>
+                                      setEvaluations((prev) => ({
+                                        ...prev,
+                                        [element.id]: { ...prev[element.id], level },
+                                      }))
+                                    }
+                                  />
+                                  <span className="font-sans text-base text-foreground/40">
+                                    {getLevelLabel(currentLevel)}
+                                  </span>
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </CollapsibleContent>
+                    </div>
+                  </Collapsible>
+                </div>
               )}
             </div>
           )}
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button type="submit" disabled={isLoading || !instrumentId} className="flex-1 w-full">
-              {isLoading ? "Enregistrement..." : "Enregistrer les modifications"}
-            </Button>
-            <Button
+          {/* Error */}
+          {error && (
+            <div className="mx-5 sm:mx-6 mb-4">
+              <p className="font-sans text-sm text-destructive">{error}</p>
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div className="p-5 sm:p-6 flex flex-wrap items-center justify-end gap-3 border-t-[3px] border-foreground">
+            <button
               type="button"
-              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1 w-full bg-transparent"
+              className="px-4 py-2.5 border-[3px] border-foreground font-sans text-base font-extrabold uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
               Annuler
-            </Button>
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading || !instrumentId}
+              className="px-4 py-2.5 bg-primary border-[3px] border-primary font-sans text-base font-extrabold uppercase text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Enregistrement..." : "Enregistrer"}
+            </button>
           </div>
         </form>
       </DialogContent>
