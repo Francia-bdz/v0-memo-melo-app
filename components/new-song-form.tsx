@@ -159,13 +159,13 @@ export function NewSongForm() {
     <form onSubmit={handleSubmit} className="w-full">
       <div className="flex flex-col gap-6">
         <div className="space-y-6 max-w-3xl">
-          <h2 className="font-sans text-[28px] font-black leading-8 text-foreground">
+          <h2 className="font-sans text-[28px] font-extrabold leading-8 text-foreground">
             Information sur le morceau
           </h2>
 
           <div className="space-y-1.5">
             <label className="font-sans text-xl font-extrabold uppercase text-foreground">
-              Titre du morceau *
+              Titre du morceau <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
@@ -195,7 +195,6 @@ export function NewSongForm() {
               Lien vers la partition
             </label>
             <input
-              type="url"
               value={partitionUrl}
               onChange={(e) => setPartitionUrl(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -208,7 +207,6 @@ export function NewSongForm() {
               Lien vers la musique (Youtube, Spotify, Deezer...)
             </label>
             <input
-              type="url"
               value={musicUrl}
               onChange={(e) => setMusicUrl(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
@@ -238,7 +236,7 @@ export function NewSongForm() {
 
           <div className="space-y-1.5">
             <label className="font-sans text-xl font-extrabold uppercase text-foreground">
-              Instrument
+              Instrument <span className="text-destructive">*</span>
             </label>
               <div className="relative w-fit">
               <select
@@ -274,10 +272,10 @@ export function NewSongForm() {
                 >
                   <div className="space-y-0.5 mb-3">
                     <h3 className="font-sans text-2xl font-bold text-foreground">
-                      {element.name}
+                      {element.name} <span className="text-destructive">*</span>
                     </h3>
                     {element.description && (
-                      <p className="font-sans text-lg font-medium text-foreground">
+                      <p className="font-sans text-lg font-regular text-foreground">
                         {element.description}
                       </p>
                     )}
@@ -293,7 +291,7 @@ export function NewSongForm() {
                         }))
                       }
                     />
-                    <span className="font-sans text-lg font-medium text-foreground/40">
+                    <span className="font-sans text-lg font-regular text-foreground/40">
                       {getLevelLabel(evaluations[element.id]?.level ?? null)}
                     </span>
                   </div>
@@ -333,7 +331,7 @@ export function NewSongForm() {
                                 {element.name}
                               </h3>
                               {element.description && (
-                                <p className="font-sans text-lg font-medium text-foreground">
+                                <p className="font-sans text-lg font-regular text-foreground">
                                   {element.description}
                                 </p>
                               )}
@@ -344,7 +342,7 @@ export function NewSongForm() {
                                 value={currentLevel}
                                 onChange={(level) => handleOptionalRating(element.id, level)}
                               />
-                              <span className="font-sans text-lg font-medium text-foreground/40">
+                              <span className="font-sans text-lg font-regular text-foreground/40">
                                 {isActivated ? getLevelLabel(currentLevel) : "Non évalué"}
                               </span>
                             </div>
@@ -359,12 +357,19 @@ export function NewSongForm() {
           )}
 
           {/* Validation button */}
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-end pt-4 gap-4">
             {error && <p className="text-sm text-destructive mr-4">{error}</p>}
+            <Button
+              className="border-3 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-xl font-extrabold uppercase h-auto flex items-center gap-5"
+            
+            onClick={() => router.back()}
+            >
+              Annuler
+            </Button>
             <Button
               type="submit"
               disabled={isLoading || !instrumentId}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-2xl font-extrabold uppercase px-5 py-3 h-auto flex items-center gap-5"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-xl font-extrabold uppercase h-auto flex items-center gap-5"
             >
               {isLoading ? "Validation..." : "Valider"}
               <Plus className="h-4 w-4" strokeWidth={4} />
