@@ -10,6 +10,7 @@ import type { Song, Instrument, InstrumentElement, Evaluation } from "@/lib/type
 import { DeleteSongDialog } from "@/components/delete-song-dialog"
 import { EditSongDialog } from "@/components/edit-song-dialog"
 import { MusicNoteDisplay } from "@/components/music-note-rating"
+import { Button } from "./ui/button"
 
 interface SongDetailViewProps {
   song: Song
@@ -89,16 +90,28 @@ export function SongDetailView({ song }: SongDetailViewProps) {
   const optionalElements = instrumentElements.filter((e) => !e.is_mandatory)
   const averageLevel = getAverageLevel(evaluations)
 
+  function GuitarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M23.8664 2.06887L21.9311 0.133594C21.753 -0.0445312 21.4642 -0.0445312 21.286 0.133594L19.3507 2.06887C19.1727 2.24691 19.1726 2.53566 19.3506 2.71378L13.9901 8.07422C12.2262 6.83765 10.2652 6.59822 9.24328 7.62009C9.01172 7.85165 8.84494 8.13159 8.73975 8.4465C8.6505 8.70778 8.54822 8.97581 8.42222 9.24309C8.27456 9.55612 8.07957 9.8535 7.81988 10.1132C7.45622 10.4768 7.01672 10.7122 6.5595 10.8591C5.60813 11.1647 4.43813 11.3876 3.45863 11.6833C3.09535 11.7739 2.74725 11.9039 2.42007 12.0739C2.262 12.1515 2.11857 12.2347 1.99388 12.3249C1.76082 12.4812 1.54163 12.6608 1.33847 12.8639C0.43566 13.7668 -0.00140287 14.9962 3.38246e-06 16.3125C0.00187838 18.1048 0.816753 20.0632 2.37657 21.6231C3.94172 23.1882 5.89032 24.0036 7.6875 24C8.99691 23.9974 10.2369 23.5599 11.1356 22.6612C11.3398 22.4571 11.5197 22.2363 11.6766 22.0019C11.7639 21.8808 11.8447 21.7425 11.92 21.5902C12.0967 21.2525 12.2313 20.8928 12.323 20.5166C12.6152 19.5421 12.8369 18.3835 13.1401 17.4398C13.287 16.9826 13.5223 16.5431 13.886 16.1795C14.1457 15.9198 14.443 15.7248 14.7561 15.5771C15.0191 15.453 15.2829 15.3521 15.5404 15.2639C15.8603 15.159 16.1449 14.9912 16.3795 14.7565C17.4015 13.7346 17.162 11.7735 15.9254 10.0096L21.2858 4.64915C21.464 4.82728 21.7529 4.82747 21.9311 4.64934L23.8664 2.71406C24.0445 2.53584 24.0445 2.247 23.8664 2.06887ZM7.74422 19.4912L4.51875 16.2657L5.16385 15.6206L8.38931 18.8461L7.74422 19.4912ZM12.5267 13.8922C11.8587 14.5601 10.7756 14.5601 10.1076 13.8922C9.4395 13.2242 9.4396 12.1411 10.1076 11.473C10.7755 10.8051 11.8586 10.8051 12.5267 11.473C13.1947 12.141 13.1947 13.2241 12.5267 13.8922Z"
+        fill="#18160C"
+      />
+    </svg>
+  );
+}
+
   return (
     <div className="space-y-6">
       {/* Top bar: Back link + Menu */}
       <div className="flex items-start justify-between">
-        <Link
-          href="/dashboard"
-          className="font-caprasimo text-2xl sm:text-3xl md:text-4xl text-foreground hover:opacity-70 transition-opacity"
-        >
-          {"< Retour au repertoire"}
-        </Link>
+
       </div>
 
       {/* Song header card */}
@@ -117,13 +130,9 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               <MusicNoteDisplay value={averageLevel} label={getLevelLabel(averageLevel)} />
             </div>
           </div>
-          <button
-            onClick={() => setShowEditDialog(true)}
-            className="p-2 hover:opacity-70 transition-opacity"
-            aria-label="Modifier le morceau"
-          >
-            <Edit className="h-6 w-6 text-foreground" />
-          </button>
+
+            <GuitarIcon className="h-6 w-6 text-foreground" />
+
         </div>
 
         {/* Notes section */}
@@ -140,9 +149,9 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               href={song.music_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-5 py-2.5 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+              className="inline-flex items-center px-3 py-2 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
-              Ecouter la musique
+              Écouter la musique
             </a>
           )}
           {song.partition_url && (
@@ -150,7 +159,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               href={song.partition_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-5 py-2.5 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+              className="inline-flex items-center px-3 py-2 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
               Voir la partition
             </a>
@@ -170,11 +179,11 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               const level = evaluation?.level || null
               return (
                 <div key={element.id}>
-                  <h4 className="font-sans font-bold text-base sm:text-lg text-foreground">
+                  <h4 className="font-sans text-xl font-bold text-foreground">
                     {element.name}
                   </h4>
                   {element.description && (
-                    <p className="font-sans text-sm text-foreground/80 mt-0.5">
+                    <p className="font-sans text-lg font-regular text-foreground mt-0.5">
                       {element.description}
                     </p>
                   )}
@@ -212,11 +221,11 @@ export function SongDetailView({ song }: SongDetailViewProps) {
                   const level = evaluation?.level || null
                   return (
                     <div key={element.id}>
-                      <h4 className="font-sans font-bold text-base sm:text-lg text-foreground">
+                      <h4 className="font-sans text-xl font-bold text-foreground">
                         {element.name}
                       </h4>
                       {element.description && (
-                        <p className="font-sans text-sm text-foreground/80 mt-0.5">
+                        <p className="font-sans text-lg font-regular text-foreground mt-0.5">
                           {element.description}
                         </p>
                       )}
@@ -234,18 +243,17 @@ export function SongDetailView({ song }: SongDetailViewProps) {
 
       {/* Bottom action buttons */}
       <div className="flex flex-wrap items-center justify-end gap-3">
-        <button
+        <Button
           onClick={() => setShowEditDialog(true)}
-          className="inline-flex items-center px-6 py-3 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
-        >
-          Mettre a jour
-        </button>
-        <button
+              className="border-3 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-lg font-extrabold uppercase h-auto flex items-center gap-5 px-3 py-2"        >
+          Mettre à jour
+        </Button>
+        <Button
           onClick={() => setShowDeleteDialog(true)}
-          className="inline-flex items-center px-6 py-3 bg-destructive font-sans font-extrabold text-sm uppercase text-destructive-foreground hover:bg-destructive/90 transition-colors"
+          className="bg-destructive hover:bg-destructive/90 text-destructive-foreground font-sans text-xl font-extrabold uppercase h-auto flex items-center gap-5  px-4 py-2.5"
         >
           Supprimer
-        </button>
+        </Button>
       </div>
 
       <EditSongDialog

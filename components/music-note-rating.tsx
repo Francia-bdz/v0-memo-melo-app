@@ -72,7 +72,7 @@ export function MusicNoteDisplay({ value, max = 5, label }: MusicNoteDisplayProp
         ))}
       </div>
       {label && (
-        <span className="text-sm text-muted-foreground ml-1">{label}</span>
+        <span className="font-sans text-lg font-regular text-foreground/40 ml-1">{label}</span>
       )}
     </div>
   )
