@@ -359,12 +359,19 @@ export function NewSongForm() {
           )}
 
           {/* Validation button */}
-          <div className="flex justify-end pt-4">
+          <div className="flex justify-end pt-4 gap-4">
             {error && <p className="text-sm text-destructive mr-4">{error}</p>}
+            <Button
+              className="border-3 border-[var(--beige-900)] bg-transparent text-[var(--beige-900)] hover:bg-[var(--beige-900)]/10 disabled:border-[var(--beige-400)] disabled:text-[var(--beige-400)]font-sans text-xl font-extrabold uppercase px-5 py-3 h-auto flex items-center gap-5"
+            
+            onClick={() => router.back()}
+            >
+              Annuler
+            </Button>
             <Button
               type="submit"
               disabled={isLoading || !instrumentId}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-2xl font-extrabold uppercase px-5 py-3 h-auto flex items-center gap-5"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-sans text-xl font-extrabold uppercase px-5 py-3 h-auto flex items-center gap-5"
             >
               {isLoading ? "Validation..." : "Valider"}
               <Plus className="h-4 w-4" strokeWidth={4} />
