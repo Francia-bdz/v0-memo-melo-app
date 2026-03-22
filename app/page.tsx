@@ -1,55 +1,89 @@
-import { Plus } from "lucide-react"
+import { Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { createClient } from "@/lib/supabase/server"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return (
     <div className="min-h-screen bg-primary p-2 sm:p-3 md:p-4">
-      {/* Inner container with beige background */}
       <div className="min-h-[calc(100vh-16px)] sm:min-h-[calc(100vh-24px)] md:min-h-[calc(100vh-32px)] bg-background flex flex-col justify-center px-6 sm:px-12 md:px-20 lg:px-32 py-12 sm:py-16 md:py-20">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 max-w-7xl mx-auto w-full">
-          {/* Left content */}
+          
+          {/* Left */}
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
-            {/* Title */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-caprasimo  text-foreground tracking-tight leading-none ">
+            
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-caprasimo text-foreground tracking-tight leading-none">
               MEMO-MELO
             </h1>
-            
-            {/* Tagline */}
+
             <p className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground font-sans">
               Garde le rythme de votre progression
             </p>
-            
-            {/* Buttons */}
+
+            {/* CTA dynamique */}
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Button asChild size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto">
-                <Link href="/auth/sign-up">
-                  <span>{"S'INSCRIRE"}</span>
-                  <Plus className="h-5 w-5" strokeWidth={3} />
-                </Link>
-              </Button>
-              
-              <Button asChild variant="outline" size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto border-2">
-                <Link href="/auth/login">
-                  <span>SE CONNECTER</span>
-                  <Plus className="h-5 w-5" strokeWidth={3} />
-                </Link>
-              </Button>
+
+              {!user ? (
+                <>
+                  <Button asChild size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto">
+                    <Link href="/auth/sign-up">
+                      <span>{"S'INSCRIRE"}</span>
+                      <Plus className="h-5 w-5" strokeWidth={3} />
+                    </Link>
+                  </Button>
+
+                  <Button asChild variant="outline" size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto border-2">
+                    <Link href="/auth/login">
+                      <span>SE CONNECTER</span>
+                      <Plus className="h-5 w-5" strokeWidth={3} />
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild size="lg" className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto">
+                    <Link href="/dashboard">
+                      <span>MON RÉPERTOIRE</span>
+                      <Plus className="h-5 w-5" strokeWidth={3} />
+                    </Link>
+                  </Button>
+
+                  <form action="/auth/sign-out" method="post">
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      size="lg"
+                      className="font-extrabold uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto border-2 flex items-center gap-2"
+                    >
+                      SE DÉCONNECTER
+                      <Minus className="h-5 w-5" strokeWidth={3} />
+                    </Button>
+                  </form>
+                </>
+              )}
+
             </div>
           </div>
-          
-          {/* Right content - Mascot */}
+
+          {/* Right */}
           <div className="flex-shrink-0 w-48 sm:w-64 md:w-80 lg:w-96">
             <Image
               src="/memo-logo.svg"
-              alt="Memo-Melo mascotte - notes de musique souriantes"
+              alt="Memo-Melo mascotte - note de musique souriante"
               width={400}
               height={400}
               className="w-full h-auto"
               priority
             />
           </div>
+
         </div>
       </div>
     </div>
