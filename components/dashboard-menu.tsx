@@ -16,7 +16,7 @@ import {
   SheetTitle,
   SheetClose,
 } from "@/components/ui/sheet"
-import { Music, LogOut, BarChart3, Wrench, Home, Menu } from "lucide-react"
+import { Music, LogOut, BarChart3, Wrench, Home, Menu, PianoIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -33,7 +33,7 @@ export function DashboardMenu() {
 
   const menuItems = [
     { href: "/dashboard", icon: Music, label: "Morceaux" },
-    { href: "/dashboard/instruments", icon: Wrench, label: "Instruments" },
+    { href: "/dashboard/instruments", icon: PianoIcon, label: "Instruments" },
     { href: "/dashboard/stats", icon: BarChart3, label: "Statistiques" },
   ]
 
@@ -100,7 +100,7 @@ export function DashboardMenu() {
             side="right" 
             className="w-[280px] border-l-[3px] border-[#18160C] bg-[#F0EEE1] p-0"
           >
-            <SheetHeader className="border-b-[3px] border-[#18160C] p-4">
+            <SheetHeader className="pl-5">
               <SheetTitle className="font-sans font-extrabold text-xl uppercase text-[#18160C]">
                 Menu
               </SheetTitle>
