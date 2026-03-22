@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Music2, Wrench, Target, TrendingUp, Award } from "lucide-react"
+import { Music2, Wrench, Target, TrendingUp, Award, PianoIcon } from "lucide-react"
 import type { Song, Instrument, Evaluation, InstrumentElement } from "@/lib/types/database"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
@@ -91,7 +91,7 @@ export function StatsOverview({ songs, instruments, evaluations }: StatsOverview
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-xs sm:text-sm font-medium">Instruments</CardTitle>
-            <Wrench className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
+            <PianoIcon className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-xl sm:text-2xl font-bold">{totalInstruments}</div>

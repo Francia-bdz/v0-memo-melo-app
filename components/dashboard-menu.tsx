@@ -33,7 +33,7 @@ export function DashboardMenu() {
 
   const menuItems = [
     { href: "/dashboard", icon: Music, label: "Morceaux" },
-    { href: "/dashboard/instruments", icon: PianoIcon, label: "Instruments" },
+    // { href: "/dashboard/instruments", icon: PianoIcon, label: "Instruments" },
     { href: "/dashboard/stats", icon: BarChart3, label: "Statistiques" },
   ]
 
