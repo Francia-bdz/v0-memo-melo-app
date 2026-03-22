@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { DashboardHeader } from "@/components/dashboard-header"
+import { DashboardMenu } from "@/components/dashboard-menu"
 import { StatsOverview } from "@/components/stats-overview"
 
 export default async function StatsPage() {
@@ -14,8 +14,6 @@ export default async function StatsPage() {
     redirect("/auth/login")
   }
 
-  const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).single()
-
   const { data: songs } = await supabase.from("songs").select("*, instruments(*)").eq("user_id", user.id)
 
   const { data: instruments } = await supabase.from("instruments").select("*")
@@ -27,15 +25,25 @@ export default async function StatsPage() {
     .order("evaluated_at", { ascending: false })
 
   return (
-    <div className="min-h-screen bg-background">
-      <DashboardHeader displayName={profile?.display_name || "Musicien"} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Statistiques d'apprentissage</h1>
-          <p className="text-muted-foreground mt-1">Suivez vos progrès sur tous les morceaux et instruments</p>
+    <div className="min-h-screen bg-primary p-2 sm:p-3 md:p-4">
+      <div className="min-h-[calc(100vh-16px)] sm:min-h-[calc(100vh-24px)] md:min-h-[calc(100vh-32px)] bg-background px-6 sm:px-12 md:px-16 lg:px-20 py-10 sm:py-14 md:py-16">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="font-caprasimo text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight">
+              Statistiques
+            </h1>
+            <p className="font-sans text-lg sm:text-xl md:text-2xl font-medium text-foreground">
+              Suis tes progres. Celebre tes victoires.
+            </p>
+          </div>
+
+          <DashboardMenu />
         </div>
+
+        {/* Stats Content */}
         <StatsOverview songs={songs || []} instruments={instruments || []} evaluations={allEvaluations || []} />
-      </main>
+      </div>
     </div>
   )
 }
