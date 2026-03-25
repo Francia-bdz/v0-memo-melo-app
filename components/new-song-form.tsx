@@ -164,7 +164,7 @@ export function NewSongForm() {
           </h2>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Titre du morceau <span className="text-destructive">*</span>
             </label>
             <input
@@ -173,12 +173,12 @@ export function NewSongForm() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "3px" }}
+              style={{ borderWidth: "2px" }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Artiste
             </label>
             <input
@@ -186,36 +186,36 @@ export function NewSongForm() {
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "3px" }}
+              style={{ borderWidth: " 2px" }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Lien vers la partition
             </label>
             <input
               value={partitionUrl}
               onChange={(e) => setPartitionUrl(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "3px" }}
+              style={{ borderWidth: "2px" }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Lien vers la musique (Youtube, Spotify, Deezer...)
             </label>
             <input
               value={musicUrl}
               onChange={(e) => setMusicUrl(e.target.value)}
               className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "3px" }}
+              style={{ borderWidth: "2px" }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Notes
             </label>
             <textarea
@@ -223,7 +223,7 @@ export function NewSongForm() {
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
               className="w-full px-3 py-2 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              style={{ borderWidth: "3px" }}
+              style={{ borderWidth: "2px" }}
             />
           </div>
         </div>
@@ -235,7 +235,7 @@ export function NewSongForm() {
           </h2>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-xl font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
               Instrument <span className="text-destructive">*</span>
             </label>
               <div className="relative w-fit">
@@ -244,7 +244,7 @@ export function NewSongForm() {
                 onChange={(e) => setInstrumentId(e.target.value)}
                 required
                 className="w-full min-w-[180px] h-10 px-3 pr-10 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer"
-                style={{ borderWidth: "3px" }}
+                style={{ borderWidth: "2px" }}
               >
                 <option value="">Choisir</option>
                 {instruments.map((instrument) => (
@@ -267,8 +267,8 @@ export function NewSongForm() {
               {mandatoryElements.map((element) => (
                 <div
                   key={element.id}
-                  className="p-4 border-3 border-foreground"
-                  style={{ borderWidth: "3px" }}
+                  className="p-4 border-2 border-foreground"
+                  style={{ borderWidth: "2px" }}
                 >
                   <div className="space-y-0.5 mb-3">
                     <h3 className="font-sans text-2xl font-bold text-foreground">
@@ -323,8 +323,8 @@ export function NewSongForm() {
                         return (
                           <div
                             key={element.id}
-                            className="p-4 border-3 border-foreground"
-                            style={{ borderWidth: "3px" }}
+                            className="p-4 border-2 border-foreground"
+                            style={{ borderWidth: "2px" }}
                           >
                             <div className="space-y-0.5 mb-3">
                               <h3 className="font-sans text-2xl font-bold text-foreground">
