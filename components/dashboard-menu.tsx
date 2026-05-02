@@ -38,14 +38,14 @@ export function DashboardMenu() {
   ]
 
   const MenuButton = ({ className = "" }: { className?: string }) => (
-    <button className={`flex items-center gap-5 border-[3px] border-[#18160C] px-5 py-3 font-sans font-extrabold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer ${className}`}>
+    <button className={`flex items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans font-bold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer ${className}`}>
       <span className="hidden sm:inline">Menu</span>
       <span className="sm:hidden">
         <Menu className="h-5 w-5" />
       </span>
       <span className="relative w-[16px] h-[16px] hidden sm:block">
-        <span className="absolute top-1/2 left-0 w-full h-[3px] bg-[#18160C] -translate-y-1/2" />
-        <span className="absolute left-1/2 top-0 w-[3px] h-full bg-[#18160C] -translate-x-1/2" />
+        <span className="absolute top-1/2 left-0 w-full h-[2px] bg-[#18160C] -translate-y-1/2" />
+        <span className="absolute left-1/2 top-0 w-[2px] h-full bg-[#18160C] -translate-x-1/2" />
       </span>
     </button>
   )

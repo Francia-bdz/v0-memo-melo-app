@@ -80,10 +80,10 @@ function SongCard({ song, score }: { song: Song; score?: number }) {
 
   return (
     <Link href={`/dashboard/songs/${song.id}`}>
-      <div className="border-[3px] border-[#18160C] p-4 flex flex-col justify-between relative hover:bg-(--beige-900)/10 transition-colors">
+      <div className="border-2 border-[#18160C] p-4 flex flex-col justify-between relative hover:bg-(--beige-900)/10 transition-colors">
         <div className="flex items-start justify-between">
           <div className="flex flex-col flex-1 min-w-0 pr-8">
-            <h3 className="font-sans font-black text-xl sm:text-2xl md:text-[28px] leading-tight text-[#18160C] truncate">
+            <h3 className="font-sans font-bold text-xl sm:text-2xl md:text-[28px] leading-tight text-[#18160C] truncate">
               {song.title}
             </h3>
             <p className="font-sans font-medium text-base sm:text-lg text-[#18160C] truncate">

@@ -81,7 +81,7 @@ export default async function DashboardPage({
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="font-caprasimo text-4xl sm:text-5xl md:text-6xl text-foreground leading-tight">
+            <h1 className="font-caprasimo text-4xl sm:text-5xl text-foreground leading-tight">
               Mon repertoire
             </h1>
             <p className="font-sans text-lg sm:text-xl md:text-2xl font-medium text-foreground">
@@ -95,7 +95,7 @@ export default async function DashboardPage({
         <Button
           asChild
           size="lg"
-          className="font-extrabold text-lg uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto mb-8"
+          className="font-bold text-lg uppercase px-6 sm:px-8 py-3 sm:py-4 h-auto mb-8"
         >
           <Link href="/dashboard/songs/new">
             <span>{"Ajouter une melodie"}</span>
@@ -149,7 +149,7 @@ export default async function DashboardPage({
                   key={pageNum}
                   href={`/dashboard?page=${pageNum}`}
                   className={`font-sans text-2xl tracking-tight ${
-                    pageNum === currentPage ? "font-extrabold" : "font-normal"
+                    pageNum === currentPage ? "font-bold" : "font-normal"
                   } text-[#000000]`}
                 >
                   {pageNum}
