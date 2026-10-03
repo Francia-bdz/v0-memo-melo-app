@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { forwardRef, useState, type ButtonHTMLAttributes } from "react"
 import { createClient } from "@/lib/supabase/client"
 import {
   DropdownMenu,
@@ -37,18 +37,26 @@ export function DashboardMenu() {
     { href: "/dashboard/stats", icon: BarChart3, label: "Statistiques" },
   ]
 
-  const MenuButton = ({ className = "" }: { className?: string }) => (
-    <button className={`flex items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans font-bold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer ${className}`}>
-      <span className="hidden sm:inline">Menu</span>
-      <span className="sm:hidden">
-        <Menu className="h-5 w-5" />
-      </span>
-      <span className="relative w-[16px] h-[16px] hidden sm:block">
-        <span className="absolute top-1/2 left-0 w-full h-[2px] bg-[#18160C] -translate-y-1/2" />
-        <span className="absolute left-1/2 top-0 w-[2px] h-full bg-[#18160C] -translate-x-1/2" />
-      </span>
-    </button>
+  const MenuButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(
+    ({ className = "", ...props }, ref) => (
+      <button
+        ref={ref}
+        type="button"
+        {...props}
+        className={`flex cursor-pointer items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans text-xl font-bold uppercase text-[#18160C] transition-colors hover:bg-[#E9E5D3] ${className}`}
+      >
+        <span className="hidden sm:inline">Menu</span>
+        <span className="sm:hidden">
+          <Menu className="h-5 w-5" />
+        </span>
+        <span className="relative hidden h-[16px] w-[16px] sm:block">
+          <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-[#18160C]" />
+          <span className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-[#18160C]" />
+        </span>
+      </button>
+    ),
   )
+  MenuButton.displayName = "MenuButton"
 
   return (
     <>
