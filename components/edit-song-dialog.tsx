@@ -340,7 +340,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
             <div className="space-y-0">
               {/* Mandatory elements */}
               {mandatoryElements.length > 0 && (
-                <div className="mx-5 sm:mx-6 border-[3px] border-foreground p-5 sm:p-6 mb-5">
+                <div className="mx-5 sm:mx-6 border-2 border-foreground p-5 sm:p-6 mb-5">
                   <h3 className="font-caprasimo text-xl sm:text-2xl text-foreground mb-5">
                     Elements de base
                   </h3>
@@ -383,7 +383,7 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
               {optionalElements.length > 0 && (
                 <div className="mx-5 sm:mx-6 mb-5">
                   <Collapsible open={showOptional} onOpenChange={setShowOptional}>
-                    <div className="border-[3px] border-foreground">
+                    <div className="border-2 border-foreground">
                       <CollapsibleTrigger asChild>
                         <button
                           type="button"
@@ -449,14 +449,14 @@ export function EditSongDialog({ song, open, onOpenChange, onSuccess }: EditSong
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="px-4 py-2.5 border-[3px] border-foreground font-sans text-base font-extrabold uppercase text-foreground hover:bg-foreground/5 transition-colors"
+              className="px-4 py-2.5 border-2 border-foreground font-sans text-base font-extrabold uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
               Annuler
             </button>
             <button
               type="submit"
               disabled={isLoading || !instrumentId}
-              className="px-4 py-2.5 bg-primary border-[3px] border-primary font-sans text-base font-extrabold uppercase text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2.5 bg-primary border-2 border-primary font-sans text-base font-extrabold uppercase text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Enregistrement..." : "Enregistrer"}
             </button>

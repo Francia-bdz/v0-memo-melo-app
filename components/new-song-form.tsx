@@ -164,7 +164,7 @@ export function NewSongForm() {
           </h2>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-bold uppercase text-foreground">
               Titre du morceau <span className="text-destructive">*</span>
             </label>
             <input
@@ -172,58 +172,53 @@ export function NewSongForm() {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "2px" }}
+              className="w-full h-10 px-3 border-2 border-foreground bg-transparent font-sans text-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-bold uppercase text-foreground">
               Artiste
             </label>
             <input
               type="text"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: " 2px" }}
+              className="w-full h-10 px-3 border-2 border-foreground bg-transparent font-sans text-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-bold uppercase text-foreground">
               Lien vers la partition
             </label>
             <input
               value={partitionUrl}
               onChange={(e) => setPartitionUrl(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "2px" }}
+              className="w-full h-10 px-3 border-2 border-foreground bg-transparent font-sans text-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-bold uppercase text-foreground">
               Lien vers la musique (Youtube, Spotify, Deezer...)
             </label>
             <input
               value={musicUrl}
               onChange={(e) => setMusicUrl(e.target.value)}
-              className="w-full h-10 px-3 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              style={{ borderWidth: "2px" }}
+              className="w-full h-10 px-3 border-2 border-foreground bg-transparent font-sans text-lg"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="font-sans text-lg font-extrabold uppercase text-foreground">
+            <label className="font-sans text-lg font-bold uppercase text-foreground">
               Notes
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border-3 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              style={{ borderWidth: "2px" }}
+              className="w-full px-3 py-2 border-2 border-foreground bg-transparent font-sans text-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             />
           </div>
         </div>
@@ -263,6 +258,10 @@ export function NewSongForm() {
           {/* Learning Elements */}
           {instrumentId && instrumentElements.length > 0 && (
             <div className="space-y-4">
+              <p className="font-sans text-lg text-foreground/60">
+                Auto-évalue ton niveau pour chaque élément d'apprentissage :)
+              </p>
+              <div className="grid grid-cols-3 gap-4">
               {/* Mandatory elements */}
               {mandatoryElements.map((element) => (
                 <div
@@ -297,7 +296,7 @@ export function NewSongForm() {
                   </div>
                 </div>
               ))}
-
+</div>
               {/* Optional elements toggle */}
               {optionalElements.length > 0 && (
                 <>
@@ -316,6 +315,7 @@ export function NewSongForm() {
 
                   {showOptionalElements && (
                     <div className="space-y-4">
+                      <div className="grid grid-cols-3 gap-4">
                       {optionalElements.map((element) => {
                         const isActivated = activatedOptionalElements.has(element.id)
                         const currentLevel = evaluations[element.id]?.level ?? null
@@ -346,9 +346,11 @@ export function NewSongForm() {
                                 {isActivated ? getLevelLabel(currentLevel) : "Non évalué"}
                               </span>
                             </div>
+                            
                           </div>
                         )
                       })}
+                      </div>
                     </div>
                   )}
                 </>
@@ -360,7 +362,7 @@ export function NewSongForm() {
           <div className="flex justify-end pt-4 gap-4">
             {error && <p className="text-sm text-destructive mr-4">{error}</p>}
             <Button
-              className="border-3 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-xl font-extrabold uppercase h-auto flex items-center gap-5"
+              className="border-2 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-xl font-extrabold uppercase h-auto flex items-center gap-5"
             
             onClick={() => router.back()}
             >

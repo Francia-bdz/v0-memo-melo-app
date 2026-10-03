@@ -115,7 +115,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
       </div>
 
       {/* Song header card */}
-      <div className="border-[3px] border-foreground p-5 sm:p-6">
+      <div className="border-2 border-foreground p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-1">
             <h2 className="font-caprasimo text-2xl sm:text-3xl text-foreground">
@@ -169,7 +169,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
 
       {/* Elements de base */}
       {instrument && mandatoryElements.length > 0 && (
-        <div className="border-[3px] border-foreground p-5 sm:p-6">
+        <div className="border-2 border-foreground p-5 sm:p-6">
           <h3 className="font-caprasimo text-2xl sm:text-3xl text-foreground mb-5">
             Elements de base
           </h3>
@@ -200,7 +200,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
       {/* Elements optionnels - collapsible */}
       {instrument && optionalElements.length > 0 && (
         <Collapsible open={showOptional} onOpenChange={setShowOptional}>
-          <div className="border-[3px] border-foreground">
+          <div className="border-2 border-foreground">
             <CollapsibleTrigger asChild>
               <button
                 type="button"
@@ -245,7 +245,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
       <div className="flex flex-wrap items-center justify-end gap-3">
         <Button
           onClick={() => setShowEditDialog(true)}
-              className="border-3 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-lg font-extrabold uppercase h-auto flex items-center gap-5 px-3 py-2"        >
+              className="border-2 border-(--beige-900) bg-transparent text-(--beige-900) hover:bg-(--beige-900)/10 disabled:border-(--beige-400) disabled:text-(--beige-400)font-sans text-lg font-extrabold uppercase h-auto flex items-center gap-5 px-3 py-2"        >
           Mettre à jour
         </Button>
         <Button
