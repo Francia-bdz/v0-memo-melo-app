@@ -38,7 +38,7 @@ export function DashboardMenu() {
   ]
 
   const MenuButton = ({ className = "" }: { className?: string }) => (
-    <button className={`flex items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans font-bold text-xl uppercase text-[#18160C] hover:bg-[--beige-900]/10 transition-colors cursor-pointer ${className}`}>
+    <button className={`flex items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans font-bold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer ${className}`}>
       <span className="hidden sm:inline">Menu</span>
       <span className="sm:hidden">
         <Menu className="h-5 w-5" />
@@ -89,7 +89,7 @@ export function DashboardMenu() {
       <div className="sm:hidden">
         <button 
           onClick={() => setIsOpen(true)}
-          className="flex items-center justify-center border-[3px] border-[#18160C] p-3 font-sans font-extrabold text-[#18160C] hover:bg-[--beige-900]/10 transition-colors cursor-pointer"
+          className="flex items-center justify-center border-[3px] border-[#18160C] p-3 font-sans font-extrabold text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer"
           aria-label="Ouvrir le menu"
         >
           <Menu className="h-5 w-5" />
