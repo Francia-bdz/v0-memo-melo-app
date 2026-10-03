@@ -149,7 +149,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               href={song.music_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-3 py-2 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+              className="inline-flex items-center px-3 py-2 border-2 border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
               Écouter la musique
             </a>
@@ -159,7 +159,7 @@ export function SongDetailView({ song }: SongDetailViewProps) {
               href={song.partition_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-3 py-2 border-[3px] border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
+              className="inline-flex items-center px-3 py-2 border-2 border-foreground font-sans font-extrabold text-sm uppercase text-foreground hover:bg-foreground/5 transition-colors"
             >
               Voir la partition
             </a>
