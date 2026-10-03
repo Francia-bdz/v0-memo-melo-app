@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { forwardRef, useState, type ButtonHTMLAttributes } from "react"
 import { createClient } from "@/lib/supabase/client"
 import {
   DropdownMenu,
@@ -37,18 +37,26 @@ export function DashboardMenu() {
     { href: "/dashboard/stats", icon: BarChart3, label: "Statistiques" },
   ]
 
-  const MenuButton = ({ className = "" }: { className?: string }) => (
-    <button className={`flex items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans font-bold text-xl uppercase text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer ${className}`}>
-      <span className="hidden sm:inline">Menu</span>
-      <span className="sm:hidden">
-        <Menu className="h-5 w-5" />
-      </span>
-      <span className="relative w-[16px] h-[16px] hidden sm:block">
-        <span className="absolute top-1/2 left-0 w-full h-[2px] bg-[#18160C] -translate-y-1/2" />
-        <span className="absolute left-1/2 top-0 w-[2px] h-full bg-[#18160C] -translate-x-1/2" />
-      </span>
-    </button>
+  const MenuButton = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(
+    ({ className = "", ...props }, ref) => (
+      <button
+        ref={ref}
+        type="button"
+        {...props}
+        className={`flex cursor-pointer items-center gap-5 border-2 border-[#18160C] px-5 py-3 font-sans text-xl font-bold uppercase text-[#18160C] transition-colors hover:bg-[#E9E5D3] focus:outline-0 ${className}`}
+      >
+        <span className="hidden sm:inline">Menu</span>
+        <span className="sm:hidden">
+          <Menu className="h-5 w-5" />
+        </span>
+        <span className="relative hidden h-[16px] w-[16px] sm:block">
+          <span className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-[#18160C]" />
+          <span className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-[#18160C]" />
+        </span>
+      </button>
+    ),
   )
+  MenuButton.displayName = "MenuButton"
 
   return (
     <>
@@ -58,7 +66,7 @@ export function DashboardMenu() {
           <DropdownMenuTrigger asChild>
             <MenuButton />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 border-[3px] border-[#18160C] bg-[#F0EEE1] rounded-none p-2">
+          <DropdownMenuContent align="end" className="w-56 border-2 border-[#18160C] bg-[#F0EEE1] rounded-none p-2">
             {menuItems.map((item) => (
               <DropdownMenuItem key={item.href} asChild className="cursor-pointer font-sans font-semibold text-lg rounded-none focus:bg-[#E9E5D3]">
                 <Link href={item.href} className="flex items-center gap-3">
@@ -67,7 +75,7 @@ export function DashboardMenu() {
                 </Link>
               </DropdownMenuItem>
             ))}
-            <DropdownMenuSeparator className="bg-[#18160C] h-[2px] my-2" />
+            <DropdownMenuSeparator className="bg-[#18160C80] h-[1px] my-2 mx-2" />
             <DropdownMenuItem asChild className="cursor-pointer font-sans font-semibold text-lg rounded-none focus:bg-[#E9E5D3]">
               <Link href="/" className="flex items-center gap-3">
                 <Home className="h-5 w-5" />
@@ -89,7 +97,7 @@ export function DashboardMenu() {
       <div className="sm:hidden">
         <button 
           onClick={() => setIsOpen(true)}
-          className="flex items-center justify-center border-[3px] border-[#18160C] p-3 font-sans font-extrabold text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer"
+          className="flex items-center justify-center border-2 border-[#18160C] p-3 font-sans font-extrabold text-[#18160C] hover:bg-(--beige-900)/10 transition-colors cursor-pointer"
           aria-label="Ouvrir le menu"
         >
           <Menu className="h-5 w-5" />
@@ -119,7 +127,7 @@ export function DashboardMenu() {
                 </SheetClose>
               ))}
               
-              <div className="h-[2px] bg-[#18160C] my-2" />
+              <div className="h-[1px] bg-[#18160C80] mx-2 my-2" />
               
               <SheetClose asChild>
                 <Link 
