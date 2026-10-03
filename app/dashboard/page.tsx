@@ -81,7 +81,7 @@ export default async function DashboardPage({
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="font-caprasimo text-4xl sm:text-5xl text-foreground leading-tight">
+            <h1 className="font-caprasimo text-4xl max-w-3xs sm:text-5xl sm:max-w-2xl text-foreground leading-tight ">
               Mon repertoire
             </h1>
             <p className="font-sans text-lg sm:text-xl md:text-2xl font-medium text-foreground">

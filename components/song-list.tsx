@@ -120,9 +120,6 @@ export function SongList({ songs, songScores = {} }: SongListProps) {
           <h3 className="mt-6 text-xl font-semibold text-[#18160C]">
             Aucun morceau pour le moment
           </h3>
-          <p className="mt-2 text-center text-sm text-[#18160C] opacity-70 max-w-sm">
-            Commencez ton voyage musical en ajoutant ton premier morceau
-          </p>
         </div>
       </div>
     );

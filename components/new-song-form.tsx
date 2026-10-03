@@ -261,7 +261,7 @@ export function NewSongForm() {
               <p className="font-sans text-lg text-foreground/60">
                 Auto-évalue ton niveau pour chaque élément d'apprentissage :)
               </p>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-3 gap-4 ">
               {/* Mandatory elements */}
               {mandatoryElements.map((element) => (
                 <div
@@ -315,7 +315,7 @@ export function NewSongForm() {
 
                   {showOptionalElements && (
                     <div className="space-y-4">
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid sm:grid-cols-3 gap-4">
                       {optionalElements.map((element) => {
                         const isActivated = activatedOptionalElements.has(element.id)
                         const currentLevel = evaluations[element.id]?.level ?? null
